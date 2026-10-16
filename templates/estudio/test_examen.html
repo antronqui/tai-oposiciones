@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Simulacro Test Oficial INAP - TAI 2027{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-2">
+    <div class="col-lg-9">
+        <!-- Cabecera del Test -->
+        <div class="card card-custom p-3 bg-white mb-4 shadow-sm">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold">
+                        <i class="bi bi-patch-check-fill me-1"></i> Formato Oficial AGE
+                    </span>
+                    <h4 class="fw-bold text-dark mt-2 mb-0">{{ titulo_test|default:"Simulacro de Preguntas Oficiales INAP" }}</h4>
+                    <small class="text-muted">{{ subtitulo_test|default:"Penalización estándar: 3 respuestas erróneas restan 1 acierto." }}</small>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-dark fs-6 px-3 py-2 rounded-pill">
+                        <i class="bi bi-stopwatch me-1"></i> <span id="testTimer">10:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario de Preguntas -->
+        <form id="testForm">
+            {% csrf_token %}
+            {% for p in preguntas %}
+            <div class="card card-custom p-4 bg-white mb-4 question-card" id="qcard-{{ p.id }}">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary text-white">Pregunta {{ forloop.counter }} de {{ total_preguntas }}</span>
+                    {% if p.tema %}
+                    <span class="badge bg-light text-muted border small">Bloque {{ p.tema.bloque.numero }} · {{ p.tema.titulo|truncatechars:35 }}</span>
+                    {% endif %}
+                </div>
+                
+                <h5 class="fw-bold text-dark mb-4 lh-base">{{ p.pregunta }}</h5>
+
+                <div class="d-flex flex-column gap-2">
+                    <div class="form-check p-3 border rounded-3 option-label" style="cursor: pointer;">
+                        <input class="form-check-input ms-0 me-3" type="radio" name="p_{{ p.id }}" id="opt_{{ p.id }}_A" value="A">
+                        <label class="form-check-label w-100" for="opt_{{ p.id }}_A">
+                            <strong>A)</strong> {{ p.opcion_a }}
+                        </label>
+                    </div>
+
+                    <div class="form-check p-3 border rounded-3 option-label" style="cursor: pointer;">
+                        <input class="form-check-input ms-0 me-3" type="radio" name="p_{{ p.id }}" id="opt_{{ p.id }}_B" value="B">
+                        <label class="form-check-label w-100" for="opt_{{ p.id }}_B">
+                            <strong>B)</strong> {{ p.opcion_b }}
+                        </label>
+                    </div>
+
+                    <div class="form-check p-3 border rounded-3 option-label" style="cursor: pointer;">
+                        <input class="form-check-input ms-0 me-3" type="radio" name="p_{{ p.id }}" id="opt_{{ p.id }}_C" value="C">
+                        <label class="form-check-label w-100" for="opt_{{ p.id }}_C">
+                            <strong>C)</strong> {{ p.opcion_c }}
+                        </label>
+                    </div>
+
+                    <div class="form-check p-3 border rounded-3 option-label" style="cursor: pointer;">
+                        <input class="form-check-input ms-0 me-3" type="radio" name="p_{{ p.id }}" id="opt_{{ p.id }}_D" value="D">
+                        <label class="form-check-label w-100" for="opt_{{ p.id }}_D">
+                            <strong>D)</strong> {{ p.opcion_d }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card card-custom p-5 text-center bg-white">
+                <p class="text-muted mb-0">No hay preguntas de examen disponibles en este bloque.</p>
+            </div>
+            {% endfor %}
+
+            {% if preguntas %}
+            <div class="d-grid my-4" id="submitArea">
+                <button type="button" class="btn btn-success btn-tai btn-lg py-3 shadow" onclick="submitTest()">
+                    <i class="bi bi-send-check me-2"></i> Finalizar y Corregir Simulacro
+                </button>
+            </div>
+            {% endif %}
+        </form>
+
+        <!-- Resultados del Test (Ocultos inicialmente) -->
+        <div id="resultsArea" class="d-none">
+            <div class="card card-custom p-4 bg-white mb-4 border-success">
+                <div class="text-center mb-4">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold mb-2">
+                        <i class="bi bi-trophy-fill me-1"></i> Resultados del Simulacro
+                    </span>
+                    <h2 class="fw-extrabold text-dark mt-2 mb-1">Puntuación Neta: <span id="resPuntos" class="text-primary">0</span></h2>
+                    <p class="text-muted small">Cálculo: Aciertos - (Fallos / 3)</p>
+                </div>
+
+                <div class="row g-3 text-center mb-4">
+                    <div class="col-4">
+                        <div class="p-3 bg-success-subtle rounded-3 border border-success-subtle">
+                            <div class="fs-3 fw-bold text-success" id="resAciertos">0</div>
+                            <div class="text-success small fw-semibold">Aciertos</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-danger-subtle rounded-3 border border-danger-subtle">
+                            <div class="fs-3 fw-bold text-danger" id="resFallos">0</div>
+                            <div class="text-danger small fw-semibold">Fallos (-0.33)</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-secondary-subtle rounded-3 border">
+                            <div class="fs-3 fw-bold text-secondary" id="resBlanco">0</div>
+                            <div class="text-muted small fw-semibold">En Blanco</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'estudio:seleccionar_sesion' %}" class="btn btn-primary btn-tai">
+                        <i class="bi bi-arrow-repeat me-1"></i> Nueva Sesión
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-tai">
+                        <i class="bi bi-house-door me-1"></i> Volver al Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Desglose de correcciones -->
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-card-checklist me-2 text-primary"></i> Justificación de Respuestas Oficiales</h5>
+            <div id="detallesCorreccion"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let testSeconds = 10 * 60;
+    const timerElem = document.getElementById('testTimer');
+    
+    const timerInterval = setInterval(() => {
+        if (testSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerElem.innerText = "00:00";
+            submitTest();
+            return;
+        }
+        testSeconds--;
+        const mins = Math.floor(testSeconds / 60);
+        const secs = testSeconds % 60;
+        timerElem.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    async function submitTest() {
+        clearInterval(timerInterval);
+        
+        const formData = new FormData(document.getElementById('testForm'));
+        const respuestas = {};
+        
+        // Recoger respuestas seleccionadas
+        document.querySelectorAll('.question-card').forEach(card => {
+            const pId = card.id.replace('qcard-', '');
+            const selected = document.querySelector(`input[name="p_${pId}"]:checked`);
+            respuestas[pId] = selected ? selected.value : "";
+        });
+
+        try {
+            const resp = await fetch("{% url 'estudio:api_test_finalizar' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ respuestas: respuestas })
+            });
+            const data = await resp.json();
+
+            if (data.status === 'ok') {
+                document.getElementById('testForm').classList.add('d-none');
+                document.getElementById('resultsArea').classList.remove('d-none');
+                
+                document.getElementById('resPuntos').innerText = `${data.puntuacion_neta} pts (${data.porcentaje}%)`;
+                document.getElementById('resAciertos').innerText = data.aciertos;
+                document.getElementById('resFallos').innerText = data.fallos;
+                document.getElementById('resBlanco').innerText = data.en_blanco;
+
+                // Renderizar correcciones
+                const contenedor = document.getElementById('detallesCorreccion');
+                contenedor.innerHTML = '';
+                
+                data.detalles.forEach((det, idx) => {
+                    const card = document.createElement('div');
+                    card.className = `card card-custom p-4 mb-3 bg-white border-${det.es_correcta ? 'success' : (det.seleccionada ? 'danger' : 'warning')}`;
+                    card.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-${det.es_correcta ? 'success' : (det.seleccionada ? 'danger' : 'secondary')}">
+                                ${det.es_correcta ? '✓ Acierto' : (det.seleccionada ? '✗ Fallo' : '— En blanco')}
+                            </span>
+                            <small class="text-muted">${det.tema}</small>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-2">${idx + 1}. ${det.pregunta}</h6>
+                        <div class="small mb-2">
+                            Tu respuesta: <strong>${det.seleccionada || 'No respondida'}</strong> | Respuesta correcta oficial: <strong class="text-success">${det.correcta}</strong>
+                        </div>
+                        ${det.explicacion ? `<div class="p-2 bg-light rounded border text-muted small"><i class="bi bi-info-circle text-primary me-1"></i> ${det.explicacion}</div>` : ''}
+                    `;
+                    contenedor.appendChild(card);
+                });
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (err) {
+            console.error('Error enviando test:', err);
+            alert('Ocurrió un error al procesar el examen.');
+        }
+    }
+</script>
+{% endblock %}

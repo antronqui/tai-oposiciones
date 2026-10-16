@@ -1,0 +1,80 @@
+﻿BLOQUE 1: Organizaci¾n del Estado y Administraci¾n P·blica
+  [OK] T1: La Constituci¾n Espa±ola de 1978. Principios, derechos y deberes fundamentales. La Corona y las Cortes Generales.
+     Estructura y principios | Estructura y valores superiores | Derechos y libertades fundamentales | Derechos y deberes fundamentales (TÝtulo I) | La Corona y las Cortes Generales | GarantÝa y suspensi¾n de derechos | El Poder Judicial
+  [OK] T2: El Gobierno y la Administraci¾n General del Estado. Organizaci¾n central, territorial y exterior.
+     Fases del procedimiento | El Consejo de Ministros y el Presidente del Gobierno | Los interesados y sus derechos | Ërganos superiores y directivos de la AGE | Eficacia y validez de los actos administrativos | Delegados y Subdelegados del Gobierno | Comunidades Aut¾nomas y Administraci¾n Local
+  [OK] T3: RÚgimen JurÝdico del Sector P·blico: Ley 40/2015. Principios de actuaci¾n, ¾rganos colegiados y convenios.
+     Principios generales de actuaci¾n | Principios generales de la potestad sancionadora | Ërganos colegiados | RÚgimen de los ¾rganos colegiados | Funcionamiento electr¾nico del sector p·blico | Relaciones interadministrativas y convenios | Sector p·blico institucional
+  [--] T4: El Procedimiento Administrativo Com·n: Ley 39/2015. Interesados, fases y recursos administrativos.
+     Capacidad de obrar y concepto de interesado | Iniciaci¾n, ordenaci¾n, instrucci¾n y finalizaci¾n | Eficacia y nulidad de los actos administrativos | Recursos de alzada, potestativo de reposici¾n y extraordinario de revisi¾n
+  [--] T5: El personal funcionario al servicio de las AAPP: Real Decreto Legislativo 5/2015 (TREBEP).
+     Clases de personal (funcionario, laboral, eventual) | Derechos y deberes. C¾digo de conducta | Situaciones administrativas | RÚgimen disciplinario y faltas
+  [--] T6: El presupuesto del Estado en Espa±a. Estructura, ciclo presupuestario y control del gasto p·blico.
+     Concepto y principios presupuestarios | Estructura presupuestaria (orgßnica, por programas, econ¾mica) | Fases de ejecuci¾n del gasto (A, D, O, P) | Control interno (IGAE) y externo (Tribunal de Cuentas)
+  [--] T7: PolÝticas de Igualdad de GÚnero (LO 3/2007), contra la Violencia de GÚnero (LO 1/2004) e integraci¾n de la discapacidad.
+     Principio de igualdad y tutela contra la discriminaci¾n | Medidas de protecci¾n integral contra la violencia de gÚnero | Planes de igualdad en la Administraci¾n General del Estado | Acceso al empleo p·blico de personas con discapacidad
+  [--] T8: Transparencia, acceso a la informaci¾n p·blica y buen gobierno: Ley 19/2013.
+     Publicidad activa y Portal de Transparencia | Derecho de acceso a la informaci¾n p·blica y sus lÝmites | El Consejo de Transparencia y Buen Gobierno (CTBG)
+  [--] T9: Protecci¾n de Datos Personales: Reglamento (UE) 2016/679 (RGPD) y Ley Orgßnica 3/2018 (LOPDGDD).
+     Principios del tratamiento de datos | Derechos de los interesados (Acceso, Rectificaci¾n, Supresi¾n, Oposici¾n, Portabilidad, Limitaci¾n) | El Delegado de Protecci¾n de Datos (DPD) | La Agencia Espa±ola de Protecci¾n de Datos (AEPD)
+
+BLOQUE 2: TecnologÝa Bßsica
+  [--] T1: Arquitectura de ordenadores. CPU, ALU, unidad de control, registros, memoria y perifÚricos.
+     Arquitectura Von Neumann vs Harvard | Arquitectura Von Neumann y Harvard | JerarquÝa de memoria y cachÚ | Estructura de la CPU: ALU, UC y banco de registros | Buses y subsistemas de E/S | JerarquÝa de memoria: registros, cachÚs (L1/L2/L3), RAM, memoria virtual | Buses del sistema (datos, direcciones, control) y perifÚricos
+  [--] T2: Representaci¾n y codificaci¾n de la informaci¾n. Sistemas de numeraci¾n y c¾digos de caracteres.
+     Planificaci¾n de CPU y estados de procesos | Sistemas de numeraci¾n (binario, octal, hexadecimal) y conversiones | Memoria virtual y paginaci¾n | Representaci¾n de enteros (complemento a 2) y coma flotante (IEEE 754) | Sistemas de archivos Linux (ext4) y Windows (NTFS) | Codificaci¾n de texto: ASCII, UTF-8, UTF-16 | Detecci¾n y correcci¾n de errores (Paridad, Hamming, CRC)
+  [--] T3: Sistemas operativos: conceptos, componentes y gesti¾n de recursos.
+     Capas del modelo OSI y equivalencia TCP/IP | Estructura del SO: n·cleo, llamadas al sistema (syscalls) | Protocolos IP, ICMP, TCP y UDP | Gesti¾n de procesos: estados, PCB y algoritmos de planificaci¾n (FIFO, Round Robin, SJF) | Direccionamiento IPv4 y subredes CIDR | Gesti¾n de memoria: paginaci¾n, segmentaci¾n y memoria virtual | Gesti¾n de entrada/salida y sistemas de archivos
+  [--] T4: Sistemas operativos Windows: arquitectura, administraci¾n, servicios y seguridad.
+     Arquitectura del kernel Windows (HAL, Executive, Win32) | Gesti¾n de usuarios, grupos y permisos NTFS | Registro de Windows y servicios del sistema | LÝnea de comandos CMD y PowerShell
+  [--] T5: Sistemas operativos Linux/Unix: arquitectura, administraci¾n, comandos y scripting.
+     Arquitectura del kernel Linux y distribuciones | Sistema de ficheros (jerarquÝa FHS y ext4) | Gesti¾n de usuarios, grupos y permisos (chmod, chown, ACLs) | Comandos esenciales de administraci¾n y scripts en Bash
+  [--] T6: Redes de computadores: conceptos fundamentales, topologÝas y el Modelo OSI de ISO.
+     Clasificaci¾n de redes (LAN, MAN, WAN) y topologÝas (estrella, bus, malla) | Medios de transmisi¾n (par trenzado, fibra ¾ptica, medios inalßmbricos) | Las 7 capas del Modelo OSI y sus funciones | Encapsulamiento y unidades de datos de protocolo (PDU)
+  [--] T7: La arquitectura TCP/IP: niveles, protocolos y direccionamiento IPv4/IPv6.
+     Pila TCP/IP y correspondencia con el modelo OSI | Nivel de red: Protocolos IP, ICMP, ARP; Direccionamiento IPv4 y subredes CIDR | Protocolo IPv6: estructura de cabecera y tipos de direcciones (Unicast, Multicast, Anycast) | Nivel de transporte: TCP (fiable, 3-way handshake) vs UDP (no orientado a conexi¾n) | Protocolos de aplicaci¾n: DNS, DHCP, HTTP/HTTPS, FTP, SMTP, SSH
+  [--] T8: Equipos de interconexi¾n y redes de ßrea local (LAN, VLAN, Wi-Fi y WAN).
+     Equipos de red: Switches (Capa 2/3), Routers y Puntos de Acceso | Redes LAN Ethernet (IEEE 802.3) y Redes de ┴rea Local Virtual (VLANs 802.1Q) | Redes Inalßmbricas Wi-Fi (Estßndares IEEE 802.11a/b/g/n/ac/ax) | TecnologÝas de acceso WAN y enrutamiento (estßtico y dinßmico)
+
+BLOQUE 3: Desarrollo de Sistemas
+  [--] T1: MetodologÝas de desarrollo de software: M╔TRICA Versi¾n 3 y MetodologÝas ┴giles.
+     Formas normales (1FN, 2FN, 3FN, BCNF) | Estructura de M╔TRICA v3: Procesos principales (PSI, EVS, DSI, CSI, IAS) | Sentencias DDL, DML, DCL y TCL | Interfaces de M╔TRICA v3 (Gesti¾n de Proyectos, Seguridad, Aseguramiento de Calidad) | Transacciones ACID e Ýndices | MetodologÝas ┴giles: Principios del Manifiesto ┴gil | Framework Scrum (Roles, Eventos, Artefactos) y Kanban
+  [--] T2: Anßlisis y dise±o orientado a objetos: Lenguaje de Modelado Unificado (UML).
+     Estructura de M╔TRICA v3 | Conceptos OOP: Clases, objetos, herencia, polimorfismo, encapsulamiento | MetodologÝas ┴giles (Scrum, Kanban) | Diagramas estructurales: Diagrama de clases, componentes, despliegue | Control de versiones con Git | Diagramas de comportamiento: Casos de uso, secuencia, actividades, estados
+  [--] T3: Patrones de dise±o de software (GoF) y arquitecturas de software.
+     Patrones Creacionales: Singleton, Factory Method, Abstract Factory, Builder | Patrones Estructurales: Adapter, Composite, Decorator, Facade, Proxy | Patrones de Comportamiento: Observer, Strategy, Command, Iterator | Patrones Arquitect¾nicos: MVC (Modelo-Vista-Controlador), Microservicios
+  [--] T4: Lenguajes de programaci¾n: paradigmas, caracterÝsticas y entornos de ejecuci¾n.
+     Paradigmas: Imperativo, Orientado a Objetos, Funcional | Compiladores, intÚrpretes, bytecode y mßquinas virtuales | Lenguajes modernos: Java (JVM), Python, C#, JavaScript/TypeScript, PHP | Gesti¾n de memoria y Garbage Collection
+  [--] T5: Bases de datos relacionales: Modelo Relacional, normalizaci¾n y ßlgebra relacional.
+     Conceptos del modelo relacional: Tablas, tuplas, atributos, claves primarias y forßneas | Integridad de datos: Integridad de entidad e integridad referencial | Formas Normales: 1FN, 2FN, 3FN y Boyce-Codd (BCNF) | Operaciones del ┴lgebra Relacional (Selecci¾n, Proyecci¾n, Uni¾n, Join)
+  [--] T6: Lenguaje de consulta estructurado (SQL): DDL, DML, DCL y TCL.
+     Sentencias DDL: CREATE, ALTER, DROP, TRUNCATE | Sentencias DML: SELECT, INSERT, UPDATE, DELETE | Clßusulas de consulta: WHERE, GROUP BY, HAVING, ORDER BY | Tipos de Joins (INNER, LEFT, RIGHT, FULL OUTER) y Subconsultas | Sentencias DCL (GRANT, REVOKE) y TCL (COMMIT, ROLLBACK)
+  [--] T7: Sistemas Gestores de Bases de Datos (SGBD) Relacionales y Bases de Datos NoSQL.
+     Arquitectura ANSI-SPARC de 3 niveles | Propiedades ACID de transacciones y niveles de aislamiento | ═ndices (B-Tree, Hash) y optimizaci¾n de consultas | SGBD Relacionales: PostgreSQL, MySQL, Oracle, SQL Server | Bases de datos NoSQL: Documentales (MongoDB), Clave-Valor (Redis), Grafos (Neo4j), Columnares
+  [--] T8: Desarrollo web y aplicaciones cliente-servidor: Frontend, Backend y APIs Web.
+     Arquitectura Web de 3 capas: Presentaci¾n, L¾gica de Negocio y Datos | Frontend: HTML5 semßntico, CSS3, JavaScript (ES6+) y frameworks (React, Vue, Angular) | Backend: Servidores de aplicaciones y frameworks (Django, Spring Boot, Node.js) | Servicios Web y APIs: Arquitectura RESTful (JSON), SOAP (XML/WSDL) y GraphQL
+  [--] T9: Control de versiones, pruebas de software y Ciclo de Integraci¾n Continua (CI/CD).
+     Control de versiones distribuido con Git (ramas, commit, merge, rebase) | Plataformas colaborativas (GitHub, GitLab) | Tipos de pruebas de software: Unitarias, Integraci¾n, Sistema, Rendimiento y Aceptaci¾n | Integraci¾n y Despliegue Continuo (CI/CD)
+  [--] T10: Accesibilidad web y usabilidad: Real Decreto 1112/2018 y Pautas WCAG.
+     Principios de accesibilidad WCAG: Perceptible, Operable, Comprensible y Robusto (POUR) | Niveles de conformidad: A, AA (exigido en el sector p·blico) y AAA | Declaraci¾n de Accesibilidad e informes peri¾dicos | Herramientas de validaci¾n de accesibilidad
+
+BLOQUE 4: Sistemas y Comunicaciones
+  [--] T1: Administraci¾n Electr¾nica en la AGE: Sedes electr¾nicas, Registro Electr¾nico y Notificaciones (DEH·/SIR).
+     Principios bßsicos y requisitos mÝnimos | Sede Electr¾nica y Punto de Acceso General electr¾nico (PAGe) | Dimensiones de seguridad (D, I, C, A, T) | Registro Electr¾nico General (REG) y Sistema de Interconexi¾n de Registros (SIR) | CategorÝas de los sistemas (Bßsica, Media, Alta) | Notificaciones electr¾nicas: Direcci¾n Electr¾nica Habilitada ·nica (DEH·) y Notifica | Intermediaci¾n de datos (PID)
+  [--] T2: Identificaci¾n, autenticaci¾n y firma electr¾nica: Reglamento eIDAS y Ley 6/2020. Plataformas Cl@ve y @firma.
+     Dimensiones de la interoperabilidad (TÚcnica, Semßntica, Organizativa) | Tipos de firma electr¾nica: Simple, Avanzada y Cualificada | Normas TÚcnicas de Interoperabilidad (NTI) | Certificados electr¾nicos y Prestadores de Servicios de Confianza | Documento y expediente electr¾nico | Plataforma de Identificaci¾n Cl@ve (Cl@ve PIN, Cl@ve Permanente, Cl@ve Firma) | Plataforma @firma y cliente AutoFirma
+  [--] T3: Esquema Nacional de Interoperabilidad (ENI): Real Decreto 4/2010 y Normas TÚcnicas de Interoperabilidad (NTI).
+     Principios del ENI y dimensiones: TÚcnica, Semßntica y Organizativa | NTI de Documento Electr¾nico y Expediente Electr¾nico | NTI de Digitalizaci¾n de Documentos y Copiado AutÚntico | Catßlogo de Estßndares del ENI
+  [--] T4: Esquema Nacional de Seguridad (ENS): Real Decreto 311/2022. Principios, dimensiones y categorizaci¾n.
+     ┴mbito de aplicaci¾n y principios bßsicos del ENS | Dimensiones de seguridad (Disponibilidad, Integridad, Confidencialidad, Autenticidad, Trazabilidad) | Categorizaci¾n de sistemas: CategorÝa Bßsica, Media y Alta | Medidas de seguridad (Marco Organizativo, Operacional y Medidas de Protecci¾n)
+  [--] T5: Seguridad de la informaci¾n y ciberseguridad: Amenazas, vulnerabilidades, ataques y guÝas CCN-STIC.
+     Tipos de malware: Virus, gusanos, troyanos, ransomware, spyware | Vulnerabilidades y ataques: Phishing, DoS/DDoS, SQL Injection, XSS, Man-in-the-Middle | Sistemas de detecci¾n y prevenci¾n de intrusos (IDS/IPS) y Cortafuegos (Firewalls) | Series de GuÝas CCN-STIC del Centro Criptol¾gico Nacional
+  [--] T6: CriptografÝa y mecanismos de seguridad: CriptografÝa simÚtrica, asimÚtrica, hash y protocolos seguros.
+     CriptografÝa SimÚtrica: Cifrado en bloque (AES, DES, 3DES) y cifrado en flujo | CriptografÝa AsimÚtrica: Clave p·blica/privada (RSA, CriptografÝa de Curva ElÝptica - ECC) | Funciones Resumen (Hash): SHA-256, SHA-512, SHA-3 | Infraestructura de Clave P·blica (PKI) y Autoridades de Certificaci¾n (CA) | Protocolos de comunicaci¾n segura: SSL/TLS, SSH, IPsec y Redes Privadas Virtuales (VPN)
+  [--] T7: Centros de Proceso de Datos (CPD), virtualizaci¾n de sistemas y contenedores (Docker/Kubernetes).
+     Infraestructura de CPD: Climatizaci¾n, extinci¾n de incendios, suministro elÚctrico (SAI/UPS) y Tiers (TIA-942) | Virtualizaci¾n: Hipervisores Tipo 1 (Bare-Metal: VMware ESXi, KVM) y Tipo 2 (VirtualBox) | Contenerizaci¾n con Docker: Imßgenes, contenedores, Dockerfile y vol·menes | Orquestaci¾n de contenedores con Kubernetes: Pods, Services, Deployments
+  [--] T8: Cloud Computing: Modelos de servicio (IaaS, PaaS, SaaS) y Estrategia Cloud de la AGE.
+     Modelos de servicio en la nube: IaaS (Infraestructura), PaaS (Plataforma), SaaS (Software) | Modelos de despliegue: Nube P·blica, Nube Privada, Nube HÝbrida y Nube Comunitaria | CaracterÝsticas esenciales del Cloud (Escalabilidad, Elasticidad, Pago por uso) | Estrategia Cloud de la Administraci¾n General del Estado
+  [--] T9: Continuidad de negocio, copias de seguridad y recuperaci¾n ante desastres (DRP/BCP).
+     Tipos de copias de seguridad: Completa, Incremental, Diferencial y Regla 3-2-1 | MÚtricas clave de recuperaci¾n: RTO (Recovery Time Objective) y RPO (Recovery Point Objective) | Planes de Continuidad de Negocio (BCP) y Planes de Recuperaci¾n ante Desastres (DRP) | Centros de respaldo: Hot Site, Warm Site y Cold Site
+

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Examen TAI {{ examen.año }} - {{ examen.get_convocatoria_display }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'examenes:lista' %}" class="text-decoration-none text-muted small">
+        <i class="bi bi-arrow-left me-1"></i> Volver a Exámenes
+    </a>
+</div>
+
+<div class="card card-custom p-4 bg-white mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+            <span class="badge bg-success me-2">{{ examen.año }}</span>
+            <span class="badge bg-secondary">{{ examen.get_convocatoria_display }}</span>
+            <h3 class="fw-bold text-dark mt-2 mb-1">{{ examen.tipo }}</h3>
+            <div class="text-muted small">
+                {{ examen.descripcion }} | {{ examen.organismo }}
+            </div>
+        </div>
+        <div>
+            <a href="{% url 'estudio:test_examen' %}" class="btn btn-success btn-tai">
+                <i class="bi bi-play-circle-fill me-1"></i> Realizar Simulacro con este Examen
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card card-custom p-4 bg-white">
+    <h5 class="fw-bold text-dark mb-3">Preguntas Oficiales y Plantilla Definitiva</h5>
+    
+    <div class="accordion" id="accordionPreguntas">
+        {% for p in examen.preguntas.all %}
+        <div class="accordion-item mb-2 border rounded-3 overflow-hidden">
+            <h2 class="accordion-header" id="heading{{ p.id }}">
+                <button class="accordion-button collapsed py-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ p.id }}" aria-expanded="false" aria-controls="collapse{{ p.id }}">
+                    <div class="d-flex align-items-center gap-2 text-start">
+                        <span class="badge bg-primary-subtle text-primary">#{{ p.numero }}</span>
+                        <span class="text-dark fw-semibold">{{ p.pregunta|truncatechars:90 }}</span>
+                    </div>
+                </button>
+            </h2>
+            <div id="collapse{{ p.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ p.id }}" data-bs-parent="#accordionPreguntas">
+                <div class="accordion-body bg-light">
+                    <p class="fw-bold text-dark mb-3">{{ p.pregunta }}</p>
+                    
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <div class="p-2 border rounded-2 {% if p.opcion_correcta == 'A' %}bg-success-subtle border-success text-success fw-bold{% else %}bg-white{% endif %}">
+                                A) {{ p.opcion_a }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 border rounded-2 {% if p.opcion_correcta == 'B' %}bg-success-subtle border-success text-success fw-bold{% else %}bg-white{% endif %}">
+                                B) {{ p.opcion_b }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 border rounded-2 {% if p.opcion_correcta == 'C' %}bg-success-subtle border-success text-success fw-bold{% else %}bg-white{% endif %}">
+                                C) {{ p.opcion_c }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 border rounded-2 {% if p.opcion_correcta == 'D' %}bg-success-subtle border-success text-success fw-bold{% else %}bg-white{% endif %}">
+                                D) {{ p.opcion_d }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success py-2 mb-0 small">
+                        <strong><i class="bi bi-check-circle-fill me-1"></i> Respuesta Correcta Oficial:</strong> Opción {{ p.opcion_correcta }}
+                        {% if p.explicacion_oficial %}
+                        <div class="mt-1 text-dark">{{ p.explicacion_oficial }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

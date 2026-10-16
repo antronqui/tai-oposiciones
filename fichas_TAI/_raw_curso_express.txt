@@ -1,0 +1,624 @@
+1 - BLOQUE 4 – TEMA 7 – TCP / IP
+MODELO OSI (ISO/IEC 7498-1 o ITU-T X.200): patrón de arquitectura planteado para el sw, para que 2 equipos de la red se conecten y
+comuniquen con reglas estandarizadas. Modelo pila/stack de protocolos. El 90% se corresponde con sw. Hay una pequeña parte hw dentro del
+nivel físico. No en todos los equipos intervienen todos los niveles. Mi PC tiene los 7 niveles, pero el router de casa solo los niveles 1, 2 y 3. Mi PC se
+comunica con el router a nivel 2.
+Aplicación: C MIS/CMIP (~SNMP), FTAM (~FTP)
+X.500 (~LDAP), X.400 (~SMTP)
+Presentación: compresión, cifrado, codificación.
+Codificación: audio, vídeo, caracteres (UTF-8).
+Protocolos 5 y 6: no es fácil su diferencia. Ej: SSL.
+Sesión: gestión de conexiones.
+SAP: Service Access Point. Funciones lenguaje C. SDU 
+Transporte: transporte host-to-host. IDU: Interfaz Data Unit. PDU 
+TP0, TP1, TP2, TP3, TP4 SDU: Service Data Unit: paquete que se intercambia en vertical.
+TP1, TP3 y TP4 son fiables ≈ TCP. ICI: Interface Control Information. Solo usado en el SAP.
+TP0 y TP2 son no fiables ≈ UDP. PDU: Protocol Data Unit. Formato de datos de cada capa
+(segmento, paquete, etc). PDUN = SDUN+1 + ICI
+Red: encaminamiento entre no adyancentes.
+Grafos, caminos. CLNS (CLNP ≈ IP, IS-IS ≈ OSPF), CONS
+Enlace: flujo entre entidades adyacentes, acceso al
+medio y gestión del enlace. Es la primera capa que
+gobierna el flujo de información entre máquinas.
+MAC y LLC.
+HDLC, LAPB
+Cada capa impone un formato de datos de intercambio (PDU). La finalidad era la seguridad. Desventaja: tiene una sobrecarga (overhead) enorme.
+Cada capa se ocupa de una serie de funcionalidades.
+MAC y LLC son subcapas del modelo IEEE, no de OSI. Su equivalencia es nivel 2.
+Modelo TCP/IP: Acceso a red (1 y 2), Internet (3), Transporte (4) y Aplicación (5, 6 y 7).
+Nivel de Red es el último nivel de encaminamiento. Direcciones físicas (MAC 48 bits). Para poder llegar lejos (red), antes tengo que dar un paso
+(enlace). Switching: Técnica que se ocupa del direccionamiento físico. Es el routing del nivel 2.
+¿Cómo garantizamos que la información llega a mi vecino inmediato?
+• Nivel LLC: Encapsula los protocolos de red, controla los errores y sincroniza las tramas. Es la parte más lógica.
+• Nivel MAC: Controla acceso de los dispositivos al medio y los permisos para transmitir datos. Es la parte más física. Algoritmos para
+difusión sin bucles (árboles de difusión): STP, MSTP, RSTP, SPB.
+Protocolo ARP: obtiene la dirección MAC de una IP. Usa broadcast (MAC FF FF FF FF FF FF). Caché ARP (IP - MAC). RARP. VLAN (802.1Q): Podemos
+definir un nivel lógico que no tiene por qué corresponderse con las conexiones físicas y aislar unas zonas de otras (seguridad, rendimiento).
+Gestión de tráfico. Las VLAN se configuran en los switches. Los routers se encargan de encaminar tráfico entre VLANs. La VLAN es una etiqueta
+dentro de la PDU.
+Un interfaz de red físico tiene varias direcciones IP para que tenga alcance desde distintos ámbitos (IPv6) o global (IPv4). Tabla
+encaminamiento/routing table: 3 tipos de rutas: directamente conectadas (DC), estáticas y dinámicas (aprendidas). Otros protocolos importantes:
+NTP, SMB/CIFS, LDAP, H.323/SIP, RDP, IPP.
+RFC: publicaciones que Los RIR se encargan de asignar direcciones IP
+describen el funcionamiento y números de sistemas autónomos (AS) para
+de Internet y otras redes, su encaminamiento BGP.
+protocolos, procedimientos...
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 1 – B4-T7 - 1 -
+Datagrama IPv4: es el PDU. Un datagrama fragmentado: se divide en “paquetes IP” (MTU del N2 – Payload Ethernet). Fragment/offset
+desplazamiento. Cabecera 20 a 60 bytes.
+• Flags
+• MF (More fragments). 0 = último o único fragmento.
+• DF (Don’t fragment): Algoritmo descubrimiento MTU.
+• TTL (Time to live o número de saltos): Los routers lo van decrementando. Si llega a
+cero lo eliminan y notifican su eliminación al origen con ICMP ”Tiempo excedido”.
+• Protocol: indica qué estamos transportando del nivel superior:
+1 – ICMP 2 – IGMP 6 – TCP
+17 – UDP 50 – ESP (IPSec) 51 – AH (IPSec) 89 – OSPF
+• El antiguo campo TOS (tipo de servicio) ahora tiene otro sentido:
+• DSCP (Differentiated Services Code Point): diferenciación de servicios / QoS.
+• ECN (Explicit Congestion Notification): notifica congestión de red sin borrar paquetes.
+ICMP: mensajes de control. IGMP: gestión de grupos multicast. NTP: fecha y hora de servidores.
+SMB/CIFS: almacenamiento en red. Compartición de archivos e impresoras. LDAP: servicio de directorio.
+H.323/SIP: videoconferencia/VoIP. RDP: protocolo de escritorio remoto. IPP: protocolo de impresión.
+NFS, XDR y RPC: RPC y el sistema de archivos de red (NFS) usan XDR para describir sus formatos de datos. Siempre van los 3 de la mano.
+Direccionamiento IPv4 Classful
+Classful: uso ineficiente del espacio de IPs.
+• 0-127: 27 redes. 224- 2 hosts. Solo hay 126 posibles redes.
+Especiales: 0.0.0.0
+Direcciones privadas: 10.0.0.0
+Direcciones reservadas: 127.0.0.1/8 Loopback.
+• 128-191: 214 redes. 216- 2 hosts.
+Direcciones privadas: 172.16.0.0 – 172.31.255.255
+Direcciones reservadas: 169.254.0.0 – 169.254.255.255
+Dirs automáticas (APIPA): 169.254.1.0 – 169.254.254.255
+• 192-223: 221 redes. 28- 2 hosts.
+Direcciones privadas: 192.168.0.0 – 192.168.255.255
+• 224-239: Multicast. Grupos de difusión.
+• 240-255: No es para identificar redes. Uso experimental.
+Parte de host a 0: dirección instrumental que identifica la red. Parte de host a 1: dirección instrumental que identifica
+todos los host (Broadcast: de una máquina a todas).
+Traducción direcciones NAT
+Source NAT: Se cambia la dirección IP de origen. Ejemplo: cuando usamos una IP privada en una red local y establecemos una conexión con un
+equipo de Internet. Un equipo de la red (normalmente el gateway) se encarga de cambiar la IP privada origen por la IP pública, para que el equipo
+de Internet pueda contestar. También es conocido como IP masquerading. Podemos distinguir dos casos:
+- SNAT estático (Static NAT): la IP pública que sustituye a la IP origen es estática.
+- SNAT dinámico o MASQUERADE: la IP pública que sustituye a la IP origen es dinámica (habitual en conexiones domésticas).
+Destination NAT o port forwarding: se utiliza cuando tenemos algún servidor en una máquina detrás del dispositivo de NAT. Será un equipo
+externo el que inicie la conexión, ya que solicitará un determinado servicio y el dispositivo de NAT debe modificar la dirección IP destino. Ej:
+Servidor web.
+PAT (Port Address translation): Modifica el puerto (origen o destino) en lugar de la IP. Ej: Peticiones web al 80 -> 8080.
+Direccionamiento IPv4 Classless
+• La ICANN introduce el concepto de prefijo CIDR (Classless Inter-Domain Routing).
+• w.x.y.z /a donde “a” es el prefijo de red. 32 - a para direcciones host.
+• Necesidad de nuevos protocolos de routing (RIPv2, OSPF).
+• Las direcciones se agrupan en “Bloques CIDR” en los ISP según necesiten los RIR.
+• Las tablas de encaminamiento antes tenían 3 cortes, ahora 31. Para minimizar el numero de entradas en las tablas del router, se pueden agrupar
+distintos “ Bloques CIDR” que compartan una parte de la numeración contigua: Supernetting.
+• Mínimo /1 - Máximo /31
+Direccionamiento IPv4 Subnetting
+• Consiste en dividir el espacio de host en subredes y hosts. Internet es un modelo de redes. Robamos bits de la parte host para hacer subredes
+• FLSM: máscara de red fija. No admite subredes de distinto tamaño.
+• Mascara de red/subred: Parte red/subred a 1 y parte host a 0.
+• Existe un tipo de mascara llamada wildcard que sirve para
+poder crear ACL’s (permisos) en un router sobre una serie de
+host concretos. Parte de red a 0’s y parte host a 1’s.
+• VLSM: máscara de red variable. Aprovecha mejor el espacio de direcciones.
+Solo aplicable con protocolos de enrutamiento classless.
+Es como un subnetting sobre clases.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 1 – B4-T7 - 2 -
+Datagrama IPv6: las direcciones son de 128 bits frente a 32 de IPv4. Cabecera de 40 bytes, frente a 20 de IPv4. Host: 64 bits menos significativos.
+Encadenamiento de cabeceras de extensión
+Si tienes Next header, las cabeceras de extensión se ponen en el
+payload, no en la cabecera.
+0 = Jumbo
+Transición IPv4 a IPv6
+- Dual Stack: a la dirección ::FFFF:a:b:c:d se la llama mapped-address y es la forma de convertir
+una IPv4 en una IPv6 “interna”.
+- Método 6to4: Técnica basada en tunneling que permite enviar paquetes IPv6 sobre redes IPv4.
+Formato de dirección IPv6:
+2002 (16 b) + IPv4 (32 b) + SubnetID (16 b) + Interface (64 b)
+Sintaxis / Compresión de direcciones: se eliminan 0 por la izquierda. Cambiar grupos seguidos
+de :0 por :: solo se puede hacer una vez. Lo habitual es compimir el mayor grupo de ceros .
+Direccionamiento / Tipos de direcciones: Ya no existe broadcast.
+Dirección de loopback en IPv4 127.0.0.1 /8 y en IPv6 ::1/128
+Unicast: identifica a un interface/host.
+• Link-Local (no enrutable): FE80::/10. Autoconfiguración y descubrimiento de vecindario. ≈ direcciones APIPA.
+FE 10-00 0000:: 10 prefijo + 54 ceros + 64 interface. No tiene identificador de red al no ser enrutable.
+• Unique-Local (enrutable en tu red): FC00::/7. F 110-0/1. Antes llamado Site-Local. ≈ direcciones privadas.
+Se divide en 2 bloques FD00::/8 (cuarto bit a 1) y FC00::/8 (sin uso definido. Cuarto bit a 0).
+7 prefijo + 1 + 40 random + 16 Subred + 64 interface
+• Global (pública): 2000::/3 Las redes empiezan por 2 o por 3 (0010 o 0011). La subred son 16 bits o menos.
+001 + Prefijo Global | Subred | Interface ID
+3 bits 45 bits 16 bits 64 bits
+Multicast: grupo de interfaces FF00::/8
+FF02::1 todos los nodos (scope 02 = link local).
+FF02::2 todos los routers (scope 02 = link local).
+La dirección de multicast “Solicited-Node” se usa
+en el protocolo de descubrimiento de vecinos y en
+la fase de detección de direcciones duplicadas del
+proceso de configuración automática de direcciones.
+Anycast: un interface dentro de un grupo. Es como una dirección unicast. Varios equipos pueden tener la misma IP y el router decide a quién le
+entrega la información. Se usa para sistemas de alta disponibilidad.
+Configuración de interfaces: configuración de la dirección IPv6 de la máquin a:
+• Manual.
+• DHCP6: Stateful.
+• SLAAC: Autoconfiguración Stateless (mecanismo para detectar IP’s duplicadas).
+Generación de 64bits (los de la derecha) del interface ID: (random o algoritmo EUI-64)
+Algoritmo EUI-64 modificado
+Dirección MAC (48 bits) de la tarjeta de red.
+En medio se mete FF FE (16 bits).
+El 7º bit se invierte.
+Prefijo de red: Protocolo NDP: mensajes ICMPv6
+RA, RS, NS, NA y redirect.
+Router/Neighbor Advertisement/Solicitation.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 1 – B4-T7 - 3 -
+Protocolos de enrutamiento
+- Los algoritmos de exterior (EGP) se dan entre sistemas autónomos (AS), entre ISPs. El número AS lo asigna IANA.
+- Vector distancia: intercambio con los vecinos.
+- Estado enlace: foto completa de la red. Más óptimo.
+- OSPF se puede descomponer en áreas (una de ellas llamada Backbone) y usa las siguientes direcciones multicast 224.0.0.5 y 224.0.0.6.
+- RIPv2 manda por multicast la tabla de routing a todos los routers adyacentes mediante multicast a la direccion 224.0.0.9. RIPv1 usaba broadcast.
+Los routers usan RIP.
+- Protocolos que soportan VLSM: OSPF, RIPv2,IS-IS y EIGRP.
+Protocolo de control ICMPv4: se encapsula directamente sobre IP, por lo que es enrutable. Cabecera de 4 bytes.
+- Los tipos 8/0 se usan en el comando ping y además el 11 en traceroute.
+- El tipo 3 con code=4 “Fragmentation Needed” se usa para el descubrimiento de MTU.
+Protocolo de transporte TCP
+- No usa direcciones, usa puertos. Es garantista. Cabecera de 20 a 60 bytes.
+- El numero de puerto indentifica a una aplicación en uno de los extremos (Socket).
+• Well Known Ports o System Ports: 0 - 1023. Asignados por IANA.
+• Registered Ports o User Ports: 1024 - 49151.
+• Dynamic Ports o Private Ports: 49152 - 65535.
+- Proceso de establecimiento de conexión (handshake) previo al envío de información. Se determinan los números de secuencia que usará cada
+extremo en esa sesión. En el primer segmento SYN se establece Window Scale, MSS, ECN Capable, etc. El tamaño de ventana es muy pequeño, así
+que se usa un factor multiplicador (Window scale).
+- Proporciona transporte fiable extremo a extremo (ACK con un numero de secuencia). Opción SACK para confirmar un bloque de secuencias “sin
+orden” cuando hay pérdidas de paquetes.
+- Mecanismo de control de flujo basado en mecanismo de ventana ”de recepción” deslizante (cada ACK viene con el campo Window Size
+informado). Window Size = 0 si el equipo está saturado y no puede recibir más información.
+- MSS: Tamaño máximo de segmento que el destino está dispuesto a recibir. Número de bytes que estamos dispuestos a recibir en un único
+segmento (relacionado con la MTU para evitar fragmentación en IP). Se informa en la PDU. Cada extremo maneja un MSS independiente.
+MSS = MTU – IPHeader – TCPHeader.
+Flags importantes
+URG: Urgent. Los datos del paquete deben ser procesados inmediatamente.
+PSH: Push. Envía inmediatamente todos los datos almacenados en el buffer.
+FIN: Finish. No harbá más transmisiones.
+ACK: Acknowlegment. Reconoce la recepción de un paquete.
+RST: Reset. Resetea una conexión.
+SYN: Synchronize. Inicia una conexión entre hosts.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 1 – B4-T7 - 4 -
+Protocolo de transporte UDP
+No garantiza el transporte. Esto lo garantiza el nivel de aplicación.
+Cabecera de 8 bytes.
+Más rápido que TCP al tener menos overhead. Los equipos ya no fallan tanto.
+La unidad de datos de UDP también se llama Datagrama como en IP.
+Algunos protocolos que utlizan UDP como capa de transporte:
+SNMP: puerto 161 y 162. RIP: puerto 520.
+DNS: puerto 53. NFS: puerto 2049.
+DHCP: puerto 67 y 68. DHCP6: puerto 546 y 547.
+NTP: puerto 123. RTP.
+QUIC (Quick UDP Internet Connections).
+FTP: Modos de transferencia
+Fase 1: establecimiento de la conexión.
+Fase 2: intercambio de datos .
+Modo pasivo: cliente inicia comunicación con comando "PASV" y Modo activo: cliente inicia comunicación con comando "PORT" y
+cliente inicia transferencia. servidor inicia transferencia.
+Puerto cliente de control: P>1023 Puerto cliente de control: P>1023
+Puerto servidor de control: 21 Puerto servidor de control: 21
+Puerto cliente de transferencia: P+1 Puerto cliente de transferencia: P+1
+Puerto servidor de transferencia: Q>1023 Puerto servidor de transferencia: 20
+Subnetting: Método VLSM
+1.- Ordenar las redes de modo decreciente por número de host, de más a menos hosts.
+2.- Calculamos el número de bits necesarios para direccionar el número de hosts de cada una de las redes, teniendo en cuenta la red y el broadcast.
+3.- Los bits de la derecha son para el host y los que sobran hasta la máscara son para subredes.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 1 – B4-T7 - 5 -
+8 - BLOQUE 3 – TEMA 5 - JAVA
+Ecosistema Java SE --> Infraestructura Ejecución + Lenguaje + Herramientas/Librerias de terceros
+INFRAESTRUCTURA
+• Construcción (JDK) = Java Development Kit. Conjunto de utilidades para desarrolladores. Herramientas de línea de comandos.
+• javac: compilador. Java es un lenguaje compilado (bytecode).
+• java: intérprete. El resultado de la compilación no es lenguaje nativo, sino un código intermedio. Ejecutamos y arranca el JRE.
+• jshell: intérprete ReadEvaluatePrintLoop - REPL de comandos interactivo. A partir de Java 9. Para hacer pruebas.
+• javadoc: generación de documentación html a partir de los fuentes .java /** …\n * @see … \n * @author … \n */
+• jar: empaquetar clases compiladas, a veces con algún fichero más como xml, etc. jar cvf nom.jar f1.class … fn.class
+• jarsigner: firmar y verificar ficheros jar.
+• keytool: criptografía ≈ OpenSSL. Herramienta de línea de comandos.
+• wsimport: generación de clases automaticas para los clientes de web services de tipo SOAP.
+• xjc: compilador que genera clases java a partir de un XSD.
+• rmic: compilador que genera clases java, stubs en cliente y skeletons en servidor, para su comunicación C/S en progr distribuida. Remote Method Invocation.
+• rmiregistry: servicio de nombres para registrar objetos distribuidos.
+• javap: desensamblador de ficheros .class. Analiza los .class y reconstruye el .java a partir de metadatos.
+• jdb: depurador.
+• jdeps: analizador de dependencias, de clases o de paquetes.
+• jmc y jconsole: herramientas de monitorización/profiling de la JVM. jmc ha desaparecido. Memoria, threads, etc. Administrar y supervisar apps: APM, JMX.
+• jjs: intérprete JavaScript.
+• Ejecución (JRE) = Java Runtime Environment. Intérprete (Máquina Virtual Java) + librerias de clases BASE (rt.jar: RunTime contine los .class). Usado en entornos
+de producción. JVM es el sw que sirve para ejecutar el código Java compilado (bytecode). Ahora en lugar de rt.jar está el module java.base.
+• java (intérprete). CLASSPATH: variable de entorno que usa la JVM para localizar y cargar clases que usa tu programa (ni las tuyas propias, ni las del rt.jar).
+En realidad se manejan tres "classpath" (ver concepto de ClassLoader dentro de la JRE). Formas de informar un classpath:
+1. Variable de entorno CLASSPATH.
+2. Property que estableces cuando se llama al intérprete. En el momento de lanzar la app. Ej: java -classpath /.../.../lib.jar
+3. En el fichero Manifest.mf existe un "campo" llamado Class-Path: ruta(s) (dentro de un fichero .jar). El .jar contiene los .class y /META-INF/MANIFEST.MF.
+• Threads o Hilos. Son los recursos encargados de que los distintos métodos se ejecuten. Ejecutan las instrucciones del programa. JVM tiene algoritmos de
+planificación para hilos. Las apps con método main() son monohilo. Las apps web sí tienen más hilos.
+Existen unos predefinidos (como el Garbage Collector GC: System.gc()), pero también podríamos crear nuestros propios Threads (en web no es normal).
+El método es pasivo y Thread es activo. El método es la receta y el hilo el cocinero. El hilo es la única entidad capaz de ejecutar el código de los métodos.
+Java Virtual Machine Specifications: para que cualquiera pueda hacer una JVM propia.
+Write once, run anywhere: los programas Java son portables.
+No se compilan para un procesador concreto, sino para uno virtual (JVM).
+LENGUAJE: orientado a objetos. Conceptos: clase, objeto, encapsulación, herencia, sobrecarga y
+polimorfismo/ligadura dinámica.
+• Encapsulación es una interface, un procedimiento para solo poder acceder a los atributos mediante los
+métodos. Nadie puede acceder a los atributos directamente desde fuera de la clase. Cuanto más
+desacoplados están dos partes de un programa, más fácil es su mantenimiento. Cuanto menos conozcan los
+detalles una de otra. Polimorfismo persigue que dos módulos vean lo mínimo posible el uno del otro.
+• Sin herencia no hay sobrescritura. La herencia en Java es simple, pudiendo tener un único padre. Podemos
+implementar más de un interface, pero solo podemos heredar de una clase
+public abstract class Ciudadano extends Persona implements Guardable, Clonable {…}
+Relación entre clases  extends
+Relación entre interfaces  extends
+Relación entre clase e interface  implements
+• Cualquier clase de Java hereda de la clase Object. Es la clase cósmica.
+• Un objeto es una instancia de una clase en memoria. This: elemento actual. Super: referencia al objeto padre. Superclase es la clase de la que heredas.
+• Constructor es el método utilizado para inicializar. También se lanzan los constructores de los padres. Java crea uno por defecto, pero si nosotros codificamos
+uno, entonces elimina el constructor por defecto.
+• El método finalize() es el encargado de eliminar el objeto de memoria y lo llama el Garbage Collector.
+• En Java todo son referencias, excepto los tipos de datos primitivos.
+• El operador == compara referencias, no contenidos. No se usa para igualar objetos. Para comparar contenido sobrescribimos el método equals de Object.
+• Casting es el proceso de convertir un objeto de una clase a otra.
+• Genericidad: tipos genéricos. Cuando mi clase es un grupo de cosas, pero no especifico qué tipo de cosas. Cuando se usa la clase hay que indicar qué tipo de cosa
+va a contener. E: Element; K: Key; T: Type; N: Number; V: Value. public class Box<T> {…}
+• Bounded: en tipos genéricos, restringes el tipo de cosa. public class NaturalNumber<T extends Integer>. Tipos que hereden de Integer. Bounded Wildcard.
+Elementos de programación básicos:
+• Clases: atributos de datos, métodos y atributos de relación. ≈ TAD. Suelen empezar por mayúscula. Modificadores principales:
+ofinal: no permite heredar la clase, o el atributo no puede modificarse y actúa como una constante o no puede sobrescribirse un método.
+ostatic: los métodos de instancia son aquellos que se ejecutan sobre un objeto en concreto. Los métodos de clase o estáticos son los que no están asociados a
+ninguna instancia, sino que son globales, pertenecen a la clase. Los hijos de la clase que define un método estático no tiene acceso a lo estático. Lo estático
+es solo de la clase que lo define. La herencia es solo para los métodos de instancia, no para los estáticos.
+oabstract: no sabemos implementar un método, pero sí que esa clase debe tenerlo. Obliga a que la clase también sea abstracta. De una clase abstracta no se
+pueden crear objetos, no puede instanciarse. Es una base para usarla mediante herencia. El hijo debe implementar el método o definirlo de nuevo como
+abstract y pasar la responsabilidad al nieto. Se usa la anotación @Override encima de la definición del método para sobrescribir el método.
+oprivate: el atributo o método solo se puede usar en el ámbito de la clase, dentro de la clase. Se hereda pero no se puede usar en los hijos, no es accesible.
+Los métodos de la clase que implementan los atributos private sí pueden acceder a ellos. Los hijos accederán a los atributos private a través de los métodos.
+opublic: se puede usar desde cualquier sitio, dentro o fuera de la clase, dentro o fuera del paquete.
+oprotected: puede usarse en la herencia, pero no fuera, a menos que esté dentro del mismo paquete. Protegido para la herencia y para el paquete.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 1 -
+onative: defino un método que no va a definirse en Java, sino en otro lenguaje (Ej: C++ en librerías de terceros). JNI es el API utilizada.
+ovolatile: una variable dentro de un método es una variable local. Cada hilo tiene en una zona de memoria las variables locales. Con volatile indicas al hilo que
+el valor de la variable local debe buscarlo en memoria principal, no en su caché, ya que si hay concurrencia ese valor en caché puede estar desactualizado.
+Eliminamos inconsistencias. Usados para atributos.
+otransient: usado para atributos. Java permite guardar un objeto de la memoria en el disco o mandarlo por la red. A ese proceso se le llama serialización.
+Transient es para no serializar un atributo. Por defecto se puede serializar todo.
+osynchronized: por defecto, en Java, atravesando un método, puede haber varios hilos. Synchronized hace que un método o una parte de código de un
+método solo sea ejecutado por un hilo cada vez, al mismo tiempo. El resto de hilos se bloquean y quedan a la espera en una cola.
+odefault: Si no especificas la visibilidad, entonces usa una por defecto. Visibilidad a nivel paquete. No hay visibilidad en subpaquetes ni en paquetes
+diferentes. La herencia solo daría visibilidad si la clase y subclase están en el mismo paquete.
+• Paquetes: Agrupación de clases. Tenemos que importarlos si queremos usar las clases de ese paquete salvo las que están en el paquete java.lang. Los
+paquetes en java se organizan fisicamente dentro del jar en carpetas/directorios.
+• Modules: técnica de agrupación por encima de los paquetes.
+• Interfaces: definición funcional pura, sin código (hasta la version 1.7). Es un esqueleto funcional, una clase con métodos vacíos. ≈ Clase abstracta pero sin
+atributos. Es un contrato funcional enumerado. Obliga a cumplir el 100% de una especificación funcional. Obliga a implementar.
+• Enum: valores enumerados. public enum Demarcacion {Portero, Defensa, Centrocampista, Delantero}; Demarcacion delantero = Demarcacion.Delantero;
+• Record: usado para almacenar valores y agruparlos en un único identificador. Implementación del patrón DAO. Desde la JDK 14 y estable desde la 17.
+• Anotaciones: usados para configurar el código. Metainformación. Sustituye a los ficheros xml de configuración.
+public @interface xxx  crea una anotación propia.
+@Target indica en qué lugares se puede aplicar esta anotación. @Target({ElementType.METHOD})
+@Retention especifica la política de retención para la anotación, determinando el tiempo que una anotación está presente durante el proceso de
+compilación y despliegue. @Retention(RetentionPolicy.RUNTIME) Para que la anotación esté disponible para la reflexión. SOURCE, CLASS, RUNTIME.
+Default Private Protected Public
+Misma clase Sí Sí Sí Sí
+Mismo paquete Sí No Sí Sí
+clase heredada
+Mismo paquete Sí No Sí Sí
+clase no heredada
+Diferente paquete No No Sí Sí
+clase heredada
+Diferente paquete No No No Sí
+clase no heredada
+API: conjunto de clases que vienen predefinidas.
+• Colecciones: Arrays, Listas, ...
+• Excepciones/Errores.
+• Hilos de Ejecución: base de Java para la ejecución del código.
+• Programación de red (bajo nivel): Socket/ServerSocket (tratamiento de TCP/IP).
+• Programación de red (alto nivel): RMI (programación distribuida o cliente/servidor o llamada a métodos remotos). Mi interface hereda del interface Remote.
+• Persistencia de bajo nivel (JDBC): Guardar/Recuperar/Borrar... info de la BBDD relacional.
+• Interface Gráfico de Usuario: Awt, JFC/Swing.
+• Logging.
+• Soporte XML: JAXP: SAX, DOM, StaX, TrAX.
+• Reflection: capacidad de acceder a los metadatos (clase, atributos, métodos) de un objeto en tiempo de ejecución.
+Novedades: versión 1.5, 1.6, 1.7, 1.8, 1.9, ...
+• Streams: funciones map, filter, etc.
+• Expresiones Lambda.
+• Optional y tipos de @FunctionalInterface: Function, Predicate, ...
+• java.time (1.8).
+• Default Methods: en interfaces.
+• Modules: fichero module-info.java --> dependencias, servicios que ofrece, que consume, etc (1.9).
+Añadido al ecosistema de Java —> JEE
+HERRAMIENTAS/LIBRERIAS DE TERCEROS
+Herramientas
+• IDE: Entorno/Editor de desarrollo. Ej: Eclipse, IntelliJ, Netbeans, ... Eclipse usa workspaces (forma de agrupar proyectos). .classpath y .project.
+• Automatización del desarrollo. Ej: Ant (build.xml), Maven (pom.xml), Gradle (build.gradle en Groovy or Kotlin DSL) , Ivy (extensión de Ant para gestión de
+dependencias), Jenkins (integración continua)...
+• JDK's: OpenJDK, Amazon Corretto, IBM JDK, ...
+• Liquibase y Flyway: herramientas para migraciones de BD.
+Librerías/Frameworks
+• iText, PDFBox  Generacion de PDF's.
+• BouncyCastle  Criptografía.
+• Log4j, Logback, SLF4J,...  Logging.
+• Xerces, Xalan, Woodstox y Apache FOP  Parsers XML y Procesors XSL.
+• JUnit+Mockito y JMeter  Pruebas unitarias y de carga. Generan juegos de datos.
+• Apache Commons (lang, dbcp, crypto, fileupload, io, codec, etc) y Guava de Google  Propósito general.
+• Apache HttpComponents (HttpClient)  Peticiones http a bajo nivel (En Java 11 ya existe un equivalente en java.net.http.HttpClient).
+• Gson y Jackson  manejo de información en formato JSON.
+• Apache POI  manejo de documentos de Office.
+• Apache Tika  Detección y extracción de contenido de multitud de formatos.
+• Pentaho Kettle  ETL para extracción de información, transformación y carga de ficheros.
+• Project Lombok  a partir de los atributos que yo defino, crea, con la ayuda de anotaciones, los getters, setters, constructores, equal, hash, toString, etc.
+• Spring MVC  es quizás el framework web más utilizado en el mundo Java.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 2 -
+ENTORNOS JAVA: Aplicaciones de escritorio.
+En cliente: ya en desuso Se ejecutaban sobre una JRE. En servidor:
+JNLP: permitía tener el .jar  Aplicaciones JEE
+en un servidor. El .jnlp
+contenía la uri del programa.
+Ahorraba la distribución de
+los .java por todos los
+Los applets ya no
+ordenadores.
+existen. Era código
+Java, por eso era
+necesario una JRE
+en el navegador.
+API DE JAVA: conjunto de clases e interfaces organizado en paquetes.
+java.lang
+Runnable/Iterable: interfaces.
+Math: clase.
+Object/Class: cualquier clase de Java hereda de Object.
+String/Integer…: clases.
+Thread: clase.
+Override: anotación para sobrescribir un método.
+System: salidas por pantalla.
+StringBuffer (cadena variable thread safe) y StringBuilder (no thread safe).
+java.net
+ServerSocket.
+Socket: servicios TCP/IP a bajo nivel.
+URLConnection.
+URL: para hacer cosas a nivel HTTP.
+InetAddress.
+java.sql: API JDBC de bajo nivel. Consultas, inserts, etc. javax.sql
+Driver: interface. DataSource: interface.
+Connection: interface.
+Statement: interface.
+ResultSet/ResultSetMetadata.
+java.text java.util
+DateFormat  SimpleDateFormat. Colecciones.
+parse(String)  Date. Calendar / Date: muy mala. Se usaba Joda-Time. > Java 1.8 está en java.time.
+format(Date)  String. Scanner.
+StringTokenizer: para trocear una cadena en base a un delimitador.
+Timer / TimerTask: schedule(TimerTask, Date): planifica tarea en una fecha.
+UUID: genera un ID único para cuando se serialice el objeto.
+java.util.logging: para generar ficheros de log. java.util.jar java.util.zip java.util.regex: para expresiones regulares.
+javax.xml.parsers javax.jws (SOAP): crea servicios web con anotaciones (Webservice, WebMethod).
+DocumentBuilder (DOM): carga todo en memoria.
+SAXParser (SAX): carga sobre la marcha.
+javax.xml.ws: EndPoint  publish(…) org.w3c.dom org.xml.sax
+java.io: gestión de ficheros y directorios. java.nio: evolución de java.io.
+InputStreams / Readers. FileChannel.
+OutputStreams / Writers. Files: delete (Path) / exists (Path).
+Console / File. FileSystems: WatchService: eventos.
+Serializable.
+JAVA COLLECTIONS (java.util): Iterable es el padre de todas las colecciones.
+• Arrays.
+asList (T… a)  List<T> donde “…” representa un nº variable de argumentos.
+binarySearch (int[], int) fill () sort ()
+• Heredan del interface Collection.
+List: Lista.
+Set  SortedSet: Conjunto.
+Queue  DeQueue: Cola.
+• Clases que representan colecciones concretas. Array es fijo. ArrayList dinámico.
+ArrayList LinkedList: doblemente enlazada (lista, doble cola).
+ArrayDeque.
+Vector  Stack: push(E); pop(): E; empty(): boolean; search(Obj): int; peek(): E
+• Map es una colección, pero no hereda de Collection ni de Iterable.
+Interface Map <K, V>
+put (K, V) get (K)  V keySet ()  set <K> values ()  Collection <V>
+Clases java que implementan Map:
+HashMap: permite nulos. No sincronizado.
+HashTable: Dictionary. TreeMap.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 3 -
+(1)
+iterator ()  Iterator <T>
+(2)
+add (E) size ()  int remove (Obj) clear () toArray()  Obj [] contains (Obj)  boolean isEmpty ()  boolean
+(3)
+get(int indice)  Object (no tiene sentido para un árbol, por eso no se define en Collection, sino a nivel List).
+indexOf (Obj) remove (int indice) subList (int, int)  List <T>
+EXCEPCIONES DE JAVA: mecanismo del programa para controlar posibles errores y para comunicar situaciones entre dos partes del programa. Es un
+sistema/mecanismo de notificaciones. Dentro del try ponemos las instrucciones potencialmente peligrosas.
+• Checked: heredan de Exception. Hay que hacer algo con ellas. Ensucian el código, para que casi nunca puedas recuperarte del error y solo se saque a un log.
+oOpción 1 (propagación): en el llamante usamos try / catch (ObjExcepcion).
+main () / doGet / f () (llamante) clase A { clase B {
+Clase A objA … permite que la excepción siga subiendo. …
+try {  … h () throws LogicaException {
+objA.g(); … g () throws LogicaException { ...
+} objB.h(); throw new LogicaException(…);
+catch (LogicaException e) { } }
+… } }
+} throw lanza excepciones
+oOpción 2: El llamante no se entera de que ha habido un error, porque se ha recuperado fuera del código, dentro de otro método.
+… … … // otro modo de implementar m () Class LogicaException extends Exception {
+objA.m(); … m () { no tiene throws, por eso debe tratarlo. … m () throws LogicaException { …
+… try { try { } Para notificar situaciones.
+objB.h(); objB.h();
+} } catch (SegEx | ValEx e) { … }
+catch (LogicaException e) { catch (LogicaException e) {
+… throw (e); catch (SegEx e) { … }
+} } catch (ValEx e) { … }
+try, catch, throw, throws, finally
+catch (Exception e { … })
+1. Definir la clase que hereda de Exception.
+Captura cualquier tipo de excepción.
+2. Crear el objeto de la nueva clase.
+3. Lanzarlo (throw) cambiando la definición del método (throws clase_excep).
+4. Modificar la llamada al método para meterla dentro del try/catch/finally.
+• Unchecked: heredan de RuntimeException. No obligas a los métodos intermedios a usar try/catch, solo al que le interesa tratar la excepción. Código más legible.
+oOpción 1: opcional
+Class ProyectoException extends RuntimeException {
+main () / doGet / f () (llamante) clase A { Public ProyectoException (String mensaje) {
+Clase A objA … g () { clase B { super(mensaje);
+try { objB.h(); … }
+objA.g(); } … h () { }
+} } ...
+catch (ProyectoException e) { throw new ProyectoException(…);
+… }
+} }
+oOpción 2
+…
+objA.g();
+…
+Si no ponemos un manejador general y hay un error, aborta la ejecución de forma no controlada.
+Throwable es la superclase de los errores y las excepciones
+No puedes recuperarte de un error, por eso no se hace try/catch.
+VirtualMachineError  OutOfMemoryError y StackOverFlowError.
+IOError.
+LOGGING EN JAVA: una parte del lenguaje para mensajes de log.
+JAVA API Logging: java.util.logging tiene poca potencia, por lo que no se usa.
+SLF4J API Logging: librería de terceros. Fachada que te independiza de lo que uses por debajo (API).
+Te casas con la fachada, no con las librerías.
+Implementaciones: con cualquiera de estas 4 librerías podemos generar ficheros/mensajes de log:
+Log4J LogBack TinyLog Apache Common Logging
+Log4J permite comportamientos diferentes en cada entorno (desarrollo, pre, producción). log4j.properties.
+Conceptos:
+Logger: entidad asociada a una clase o paquete. Permite sacar cada tipo de mensaje a un fichero distinto.
+Appender: indica el destino de los mensajes de los loggers (consola, fichero, bbdd, etc).
+Layout/Encoder: formato visual de cada mensaje.
+Level del logger: puede tomar diferentes valores, de modo que solo se procesarán mensajes del
+nivel con el que esté configurado o superiores.
+Ejemplo: en producción nivel WARN sacará los WARN y ERROR, pero no los TRACE, ni DEBUG, ni INFO.
+- ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF +
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 4 -
+THREADS: en Java hay hilos siempre.
+Creación: 2 formas de crear hilos.
+1. Herencia de Thread y sobrescritura de run(). 2. Crear “cuerpos” de hilos implementando la interface Runnable.
+class TareaBackup extends Thread { class TareaBackup implements Runnable {
+// Puede tener atributos y constantes. // Puede tener atributos y constantes.
+@Override @Override
+public void run () { public void run () { // lo mismo que en la opción 1 (usa implements en vez de extends)
+// Cuerpo del hilo. // Cuerpo del hilo.
+} }
+} }
+class LanzadorDeTareas { class LanzadorDeTareas {
+… …
+TareaBackup t1 = new TareaBackup(); Thread h1 = new Thread (new TareaBackup());
+t1.start(); // JRE lanza un nuevo hilo contra el método h1.start();
+run() sobrescrito. Tú no llamas a run, sino a start. El }
+planificador es quien llama a run.
+}
+start() pone el hilo en la cola de ejecución. start() llama al planificador y el planificador, cuando elija nuestro hilo, llamará al método run().
+Sincronización: un objeto contiene información. Cualquier clase de Java hereda de Object, heredando los métodos wait() y notify() para
+funcionar como monitor (concepto de concurrencia), para gobernar el flujo de ejecución de todos los hilos que comparten un mismo
+objeto/recurso. Problema del Productor/Consumidor: si la cola no tiene datos, al siguiente consumidor le decimos wait(). Cuando haya
+datos avisaremos con notify(). Si declaramos un método como synchronized, significa que solo puede usar ese objeto un hilo al mismo
+tiempo. También puede ponerse a nivel de bloque de código synchronized (lockObj) { … }. Evita problemas de concurrencia en esa
+sección crítica.
+Funcionamiento: para saber qué hilo está pasando por una zona de código podemos llamar a Thread.currentThread.getId() y getName(). Cada hilo tiene su propia
+variable x, su propia copia, su propio espacio de memoria (stack). Todos los hilos comparten los atributos de obj1. Esto sí está en un único espacio de memoria
+(heap). Aquí hay peligro de concurrencia. Solución synchronized.
+PERSISTENACIA EN JAVA/JEE: Otro nombre de estos productos es ORM (Object Relational Mapping), que traduce el mundo de la Orientación a Objetos al mundo de
+las tablas (Objeto  Fila). Funciona si sigues la convención de nomenclatura entre clases y
+tablas, atributos y campos. Por eso la librería puede construir sentencias automáticamente.
+En el modelo de alto nivel, la app le pasa objetos de negocio al EM y éste, en base a la clase a la
+que pertenece ese objeto, sabe construir el SQL (API Reflection: acceder y modificar clases en
+tiempo de ejecución). Usado mucho en apps web.
+La parte crítica es que en la App se pierde el control de esas sentencias SQL.
+JPA es la especificación (API) e Hibernate y OpenJPA son 2 de sus implementaciones.
+Para crear sentencias SQL usando clases y atributos  JPQL (Java Persistence Query
+Language). JDBC es más manual, con tratamiento directo con las tablas.
+En los dos métodos tenemos dos objetos Java: DataSource y Driver. JPA mete una capa más de abstracción.
+Driver: hay un .jar para cada fabricante. DataSource: crea X conexiones a BD según arranca y establece un límite. Las primeras conexiones se asignan muy rápido al
+estar ya creadas. Las siguientes tardan un poco más. Driver no limita el nº de conexiones, así que puedes tumbar la BD. Por eso se crea DataSource. Si se llega al
+límite de conexiones entonces se hace wait() a la siguiente petición de conexión.
+MAVEN: herramienta independiente hecha en Java (puede usarse por línea de comandos) aunque ya la llevan todos los IDE (entorno de desarrollo integrado).
+Herramienta de automatización de la construcción (building): localiza el código fuente, ficheros de configuración, lo compila, lo empaqueta y pasa los tests.
+Gestor de dependencias: se basa en repositorios y dependencias. También existen archetypes (plantillas de proyectos).
+Fichero principal: POM.xml (Project Object Model) donde se declara la dependencia. Maven descarga el .jar (directorio local .m2) y lo usa para compilar.
+Cualquier artefacto de Maven tiene 3 coordenadas: groupId, artifactId y version.
+groupId y artifactId son únicos para cada fabricante de software. El fabricante publica su código.
+http://repo.maven.apache.org
+Obliga a usar un árbol de directorios concreto: src/main/java para guardar los .java.
+mvn package realiza todos los pasos/fases necesarias para construir un jar/war en el directorio target. mvn puede lanzarse desde donde tengas el fichero POM.xml
+Maven trabaja con una versión concreta, no deja indicar que use la última versión de una librería.
+Maven y Ant son de Apache, pero Ant no tiene gestor de dependencias.
+NOVEDADES DE LAS VERSIONES 1.7 y 1.8 EN ADELANTE
+Streams: va encadenando cosas hasta llegar a un resultado final. Evita tener que crear una clase y un método. Es una manera de acercarse a la programación
+funcional, siendo menos propenso a errores. Expresiones lambda (funciones anónimas). filter, map, reduce, forEach.
+int alturaMedia = personas.stream(); // internamente crea un conjunto de personas.
+.mapToInt (Persona p  {return p.getAltura();}); // p es el parámetro de entrada. {…} es el cuerpo de la función.
+.average(); // del conjunto de personas hace la media.
+try-with-resources + multicatch: similar a la cláusula using de .NET. Disponible a partir de Java 1.7.
+try (FileOutputStream fos = new FileOutputStream()) { … } // fos se cierra solo cuando termina el bloque de código del try. Antes se cerraban en el finally.
+catch (ExceptionX | ExceptionY ex) { … }
+finally { … }
+Motor de script: para lanzar JS. Ya lo han eliminado de las versiones actuales. Era un motor de JS dentro de la JRE. Ahora existe GraalVM, una máquina virtual
+políglota que cubre varios lenguajes (Java, JavaScript, Python, Ruby, R, C, C++).
+Objetos Función (@FuntionalInterface): similar a los streams. Interfaces con una única función. Programación funcional. Para tener funciones como si fuesen
+métodos propios. Son objetos muy funcionales.
+Function: acepta un argumento y devuelve un resultado. @FunctionalInterface.
+Métodos por defecto en interfaces: con la palabra reservada default podemos tener un método con código. Antes los métodos en las interfaces solo se definían.
+Programación asíncrona: clase CompletableFuture de java.util.concurrent usada para patrones de diseño para programación concurrente.
+java.time: influencia de la librería joda-time. Métodos Instant, Duration, LocalDate, Period, Year.
+instanceof: determina si el objeto al que apunta una referencia es una instancia de una clase o interfaz concretas. System.out.print(perro instanceof Animal);
+Optional: patrón de diseño para evitar los Null Pointer Exception.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 5 -
+OPERADOR ASIGNACIÓN
+OPERADORES ARITMÉTICOS
+OPERADORES ARITMÉTICOS INCREMENTALES
+OPERADORES ARITMÉTICOS COMBINADOS
+OPERADORES DE RELACIÓN
+OPERADORES LÓGICOS O BOOLEANOS
+OPERADOR CONDICIONAL
+OPERADOR CONCATENACIÓN DE CADENAS
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 6 -
+OPERADORES DE BIT
+SEPARADORES
+PRIORIDAD ENTRE OPERADORES
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 7 -
+SENTENCIAS DE CONTROL
+if (expresion) switch (expresion) { while (expresion) { Las sentencias de ramificación en Java son:
+{ case valor1: bloque_sentencias; break para salir de bloque de sentencias.
+// Bloque if bloque1; } continue para ir directamente al siguiente bloque.
+} else if (expresion) break;
+{ case valor2: do {
+// Bloque else bloque2; bloque_sentencias;
+} break; } while (expresion);
+} else case valor3:
+{ bloque3; for (sentencias_inicio; expresion; incremento) {
+// Bloque else break; bloque_sentencias;
+} … }
+default:
+bloque_por_defecto; for (int i=0; i <= 5; ++i) {
+} …;
+}
+METODOS DE LA CLASE OBJECT
+METODO DESCRIPCION
+Object clone() Crea un nuevo objeto, igual al que se duplica.
+boolean equals (Object objeto) Determina si un objeto es igual a otro.
+void finalize() Llama antes de que un objeto no utilizado sea reciclado.
+Class getClass() Obtiene la clase de un objeto en tiempo de ejecución.
+int hashCode() Devuelve el código asociado al objeto que realiza la llamada.
+void notify() Reiniciar la ejecución de un hilo en espera en el objeto que realiza la llamada.
+void notifyAll() Reiniciar la ejecución de todos los hilos en espera en el objeto que realiza la llamada.
+String toString() Devuelve una cadena que describe el objeto.
+void wait()
+void wait (long miliseg) Espera en otro subproceso de ejecución.
+void wait (long miliseg, int nanoseg)
+Paradigmas de programación: formas de clasificar los lenguajes de programación en función de sus características. Los paradigmas de programación comunes son:
+• Imperativo: el programador dice a la máquina qué hacer en un orden.
+• Procedimental: agrupa las instrucciones en procedimientos.
+• Orientado a objetos: agrupa las instrucciones con la parte del estado en objetos. Suelen ser imperativos.
+• Declarativo: el programador declara el resultado deseado.
+• Funcional: el resultado deseado se declara como el valor de una serie de aplicaciones de función.
+• Lógico: el resultado deseado se declara como la respuesta a una pregunta sobre un sistema de hechos y reglas.
+• Matemático: el resultado deseado se declara como la solución de un problema de optimización.
+• Reactivo: el resultado deseado se declara con flujos de datos y la propagación del cambio.
+CARLOS VELILLA GARCIA – Telegram @CARLOSVELILLA 8 - B3-T5.1 - 8 -

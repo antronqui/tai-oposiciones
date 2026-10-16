@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Preparación TAI 2027{% endblock %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-lg-7 text-center text-lg-start mb-4 mb-lg-0">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-bold mb-3">
+            <i class="bi bi-stars me-1"></i> Plataforma Inteligente TAI 2027 · MVP v1
+        </span>
+        <h1 class="display-4 fw-extrabold text-dark tracking-tight mb-3">
+            Prepara tu plaza de <span class="text-primary">Técnico Auxiliar de Informática</span> con fuentes oficiales
+        </h1>
+        <p class="lead text-muted mb-4">
+            Estudio estructurado mediante repetición espaciada, tarjetas conceptuales atómicas y preguntas reales de exámenes del INAP con trazabilidad 100% oficial.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+            <a href="{% url 'accounts:local_login' %}" class="btn btn-primary btn-lg btn-tai px-4 shadow-sm">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Iniciar Sesión / Invitados
+            </a>
+            <a href="#caracteristicas" class="btn btn-outline-secondary btn-lg btn-tai px-4">
+                <i class="bi bi-info-circle me-2"></i> Conocer el Método
+            </a>
+        </div>
+        
+        <div class="d-flex align-items-center gap-4 mt-4 pt-3 border-top justify-content-center justify-content-lg-start text-muted small">
+            <div><i class="bi bi-check2-circle text-success me-1"></i> Temario TAI 2026/2027</div>
+            <div><i class="bi bi-check2-circle text-success me-1"></i> Repetición Espaciada</div>
+            <div><i class="bi bi-check2-circle text-success me-1"></i> Exámenes INAP</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-5">
+        <div class="card card-custom p-4 shadow-lg border-primary border-opacity-25 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h5 class="fw-bold mb-0 text-dark">Acceso a la Plataforma</h5>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Acceso Restringido</span>
+            </div>
+            
+            <p class="text-muted small">
+                El acceso a la versión MVP está reservado a usuarios con invitación previa. Puedes identificarte con tu cuenta de Google autorizada o correo de invitado.
+            </p>
+
+            <div class="d-grid gap-2 my-3">
+                <a href="{% url 'google_login' %}" class="btn btn-outline-dark btn-tai py-2 d-flex align-items-center justify-content-center gap-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3 0-.8.1-1.6.4-2.3L1.9 7.3C.7 9.7 0 12.3 0 15.2s.7 5.5 1.9 7.9l3.7-2.9z"/><path fill="#34A853" d="M12 23.5c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16.5C3.7 20.2 7.5 23.5 12 23.5z"/></svg>
+                    <span>Continuar con Google</span>
+                </a>
+                <a href="{% url 'accounts:local_login' %}" class="btn btn-light btn-tai py-2 border text-dark">
+                    <i class="bi bi-key-fill text-secondary me-2"></i> Acceso Local / Testing
+                </a>
+            </div>
+
+            <div class="bg-light p-3 rounded-3 mt-2 border">
+                <div class="d-flex align-items-center justify-content-between text-muted small">
+                    <span>Bloques cargados:</span>
+                    <span class="fw-bold text-dark">{{ total_bloques }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-muted small mt-1">
+                    <span>Temas oficiales:</span>
+                    <span class="fw-bold text-dark">{{ total_temas }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-muted small mt-1">
+                    <span>Tarjetas activas:</span>
+                    <span class="fw-bold text-dark">{{ total_tarjetas }}</span>
+                </div>
+                <div class="d-flex align-items-center justify-content-between text-muted small mt-1">
+                    <span>Preguntas INAP:</span>
+                    <span class="fw-bold text-dark">{{ total_preguntas }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Principios del Proyecto -->
+<section id="caracteristicas" class="py-5 border-top">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-dark">Los 4 Principios Fundamentales del Sistema</h2>
+        <p class="text-muted">Diseñado para retener a largo plazo y maximizar la nota en el examen oficial.</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-3 bg-white">
+                <div class="fs-1 text-primary mb-2"><i class="bi bi-shield-shaded"></i></div>
+                <h5 class="fw-bold">1. Fuentes Oficiales</h5>
+                <p class="text-muted small mb-0">Legislación obtenida exclusivamente de BOE, INAP y CCN-CERT. Sin resúmenes no verificados.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-3 bg-white">
+                <div class="fs-1 text-success mb-2"><i class="bi bi-journal-check"></i></div>
+                <h5 class="fw-bold">2. Trazabilidad Total</h5>
+                <p class="text-muted small mb-0">Cada tarjeta y pregunta guarda el organismo emisor, artículo de la ley, URL y fecha de consulta.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-3 bg-white">
+                <div class="fs-1 text-warning mb-2"><i class="bi bi-lightbulb-fill"></i></div>
+                <h5 class="fw-bold">3. Una Tarjeta = Una Idea</h5>
+                <p class="text-muted small mb-0">Contenidos atómicos fáciles de digerir: definiciones, fechas, organismos, procedimientos y comparativas.</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-custom h-100 p-3 bg-white">
+                <div class="fs-1 text-info mb-2"><i class="bi bi-arrow-repeat"></i></div>
+                <h5 class="fw-bold">4. Repetición Espaciada</h5>
+                <p class="text-muted small mb-0">Algoritmo inteligente de repaso en intervalos crecientes (1, 3, 7, 15, 30 y 60 días) para fijar en memoria.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Temario Oficial TAI 2026/2027{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-1"><i class="bi bi-journal-bookmark-fill text-primary me-2"></i> Temario Oficial TAI</h2>
+        <p class="text-muted mb-0">Estructura normalizada en 4 bloques con trazabilidad a BOE, INAP y CCN-STIC.</p>
+    </div>
+    <a href="{% url 'estudio:seleccionar_sesion' %}" class="btn btn-primary btn-tai">
+        <i class="bi bi-play-fill me-1"></i> Iniciar Estudio
+    </a>
+</div>
+
+<div class="row g-4">
+    {% for bloque in bloques %}
+    <div class="col-12">
+        <div class="card card-custom p-4 bg-white">
+            <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="bg-primary-subtle text-primary p-3 rounded-3 fs-4">
+                        <i class="bi {{ bloque.icono }}"></i>
+                    </span>
+                    <div>
+                        <span class="badge bg-secondary text-white">Bloque {{ bloque.numero }}</span>
+                        <h4 class="fw-bold text-dark mb-0 mt-1">{{ bloque.nombre }}</h4>
+                    </div>
+                </div>
+                <span class="badge bg-light text-muted border px-3 py-2">
+                    {{ bloque.temas.count }} temas oficiales
+                </span>
+            </div>
+
+            <p class="text-muted small mb-3">{{ bloque.descripcion }}</p>
+
+            <div class="list-group list-group-flush">
+                {% for tema in bloque.temas.all %}
+                <div class="list-group-item d-flex justify-content-between align-items-center px-2 py-3">
+                    <div>
+                        <div class="fw-bold text-dark">
+                            <span class="badge bg-primary-subtle text-primary me-2">Tema {{ tema.numero }}</span>
+                            {{ tema.titulo }}
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 align-items-center mt-2 small text-muted">
+                            <span><i class="bi bi-shield-check text-success me-1"></i> Fuente: {{ tema.fuente_oficial }}</span>
+                            {% if tema.url_oficial %}
+                            <span>• <a href="{{ tema.url_oficial }}" target="_blank" class="text-decoration-none text-primary"><i class="bi bi-box-arrow-up-right me-1"></i> Ver en BOE/INAP</a></span>
+                            {% endif %}
+                            <span>• {{ tema.subtemas.count }} subtemas</span>
+                            <span>• {{ tema.tarjetas.count }} tarjetas</span>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="{% url 'temario:tema_detalle' tema.id %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            Ver Detalles <i class="bi bi-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-muted small p-3">No hay temas cargados para este bloque.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

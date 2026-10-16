@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso de Invitados{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card card-custom p-4 bg-white shadow-sm">
+            <div class="text-center mb-4">
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-1 rounded-pill small mb-2">Acceso Restringido</span>
+                <h4 class="fw-bold text-dark">Identificación de Opositor</h4>
+                <p class="text-muted small">Introduce el correo electrónico con el que fuiste invitado a la plataforma TAI 2027.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-bold small text-dark">Correo Electrónico Invitado</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="ejemplo: antronqui@gmail.com" required autofocus>
+                </div>
+                
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-tai">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Acceder a la Plataforma
+                    </button>
+                    <a href="{% url 'google_login' %}" class="btn btn-outline-dark btn-tai">
+                        <i class="bi bi-google me-2"></i> Iniciar sesión con Google
+                    </a>
+                </div>
+            </form>
+
+            <div class="mt-4 pt-3 border-top text-center text-muted small">
+                ¿No tienes invitación? Solicita acceso al administrador de la plataforma.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block title %}Sesión Flashcards - TAI 2027{% endblock %}
+
+{% block extra_css %}
+<style>
+    .flashcard-container {
+        perspective: 1000px;
+        min-height: 400px;
+    }
+    .flashcard {
+        position: relative;
+        width: 100%;
+        min-height: 400px;
+        transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+        transform-style: preserve-3d;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .flashcard.flipped {
+        transform: rotateY(180deg);
+    }
+    .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: 16px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .card-face-back {
+        transform: rotateY(180deg);
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+    .srs-btn {
+        padding: 0.75rem 0.5rem;
+        font-weight: 700;
+        border-radius: 12px;
+        min-height: 52px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.1s ease, background-color 0.15s ease;
+        touch-action: manipulation;
+    }
+    .srs-btn:active {
+        transform: scale(0.96);
+    }
+    /* Estilos específicos para iPhone 12 Mini (375px) y pantallas compactas */
+    @media (max-width: 576px) {
+        .flashcard-container {
+            min-height: 380px;
+        }
+        .flashcard {
+            min-height: 380px;
+        }
+        .card-face {
+            padding: 1.25rem 1rem;
+            border-radius: 14px;
+        }
+        #cardPregunta {
+            font-size: 1.18rem !important;
+            line-height: 1.45 !important;
+        }
+        #cardRespuesta {
+            font-size: 1.08rem !important;
+            line-height: 1.4 !important;
+        }
+        #cardExplicacionWrapper {
+            padding: 0.85rem !important;
+            font-size: 0.88rem !important;
+        }
+        .srs-btn {
+            min-height: 48px;
+            padding: 0.5rem 0.2rem;
+        }
+        .srs-btn .fw-bold {
+            font-size: 0.82rem;
+        }
+        .srs-btn small {
+            font-size: 0.68rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-2">
+    <div class="col-lg-8">
+        <!-- Barra Superior de Sesión -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark text-white px-3 py-2 rounded-pill">
+                    <i class="bi bi-clock me-1"></i> <span id="timerDisplay">--:--</span>
+                </span>
+                <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+                    Tarjeta <strong id="currentIdx">1</strong> de <strong id="totalCards">{{ total_cola }}</strong>
+                </span>
+            </div>
+            <div>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="return confirm('¿Deseas pausar y salir de la sesión?');">
+                    <i class="bi bi-x-lg me-1"></i> Pausar
+                </a>
+            </div>
+        </div>
+
+        <!-- Progreso de la sesión -->
+        <div class="progress mb-4" style="height: 6px;">
+            <div id="sessionProgressBar" class="progress-bar bg-primary" role="progressbar" style="width: 0%;"></div>
+        </div>
+
+        <!-- Visor Flashcard -->
+        <div id="flashcardArea">
+            <div class="flashcard-container mb-4">
+                <div class="flashcard" id="activeCard" onclick="flipCard()">
+                    <!-- ANVERSO / PREGUNTA -->
+                    <div class="card-face card-face-front">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" id="cardBloque">Bloque</span>
+                                <span class="badge bg-secondary-subtle text-secondary" id="cardTipo">Tipo</span>
+                            </div>
+                            <div class="text-muted small mb-2" id="cardTema">Tema Oficial</div>
+                            <h3 class="fw-bold text-dark mt-3 lh-base" id="cardPregunta">Pregunta</h3>
+                        </div>
+                        <div class="text-center text-muted small pt-3 border-top">
+                            <i class="bi bi-arrow-repeat me-1"></i> Haz clic o pulsa <strong>Espacio</strong> para ver la respuesta
+                        </div>
+                    </div>
+
+                    <!-- REVERSO / RESPUESTA -->
+                    <div class="card-face card-face-back">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Respuesta Oficial</span>
+                                <span class="badge bg-light text-muted border" id="cardDificultad">Dificultad</span>
+                            </div>
+                            <h4 class="fw-bold text-success mb-3 lh-base" id="cardRespuesta">Respuesta</h4>
+                            <div class="bg-white p-3 rounded-3 border mb-3 small" id="cardExplicacionWrapper">
+                                <strong>Explicación / Razonamiento:</strong>
+                                <div id="cardExplicacion" class="text-muted mt-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center text-muted small pt-2 border-top">
+                            <div>
+                                <i class="bi bi-shield-check text-success me-1"></i> <span id="cardFuente">Fuente</span>
+                            </div>
+                            <a href="#" id="cardUrl" target="_blank" class="text-primary text-decoration-none" onclick="event.stopPropagation();">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Verificar norma
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones SRS de Calificación (Visibles al girar) -->
+            <div id="ratingControls" class="d-none">
+                <div class="text-center text-muted small mb-2">¿Cómo recuerdas este concepto?</div>
+                <div class="row g-2">
+                    <div class="col-3">
+                        <button class="btn btn-outline-danger w-100 srs-btn" onclick="rateCard('repetir')">
+                            <div class="fw-bold">❌ Repetir</div>
+                            <small class="d-none d-md-inline text-muted">&lt; 1 día</small>
+                        </button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-warning w-100 srs-btn" onclick="rateCard('dificil')">
+                            <div class="fw-bold">🟡 Difícil</div>
+                            <small class="d-none d-md-inline text-muted">1 día</small>
+                        </button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-primary w-100 srs-btn" onclick="rateCard('bien')">
+                            <div class="fw-bold">🟢 Bien</div>
+                            <small class="d-none d-md-inline text-muted">3-7 días</small>
+                        </button>
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-outline-success w-100 srs-btn" onclick="rateCard('facil')">
+                            <div class="fw-bold">⭐️ Fácil</div>
+                            <small class="d-none d-md-inline text-muted">+15 días</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="flipPromptBtn" class="text-center mt-3">
+                <button class="btn btn-primary btn-tai px-4 py-2" onclick="flipCard()">
+                    <i class="bi bi-eye-fill me-1"></i> Mostrar Respuesta (Espacio)
+                </button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Finalización de Flashcards -->
+        <div id="finishArea" class="card card-custom p-5 bg-white text-center d-none">
+            <div class="fs-1 text-success mb-3"><i class="bi bi-check-circle-fill"></i></div>
+            <h3 class="fw-bold text-dark">¡Bloque de Tarjetas Completado!</h3>
+            <p class="text-muted">Has repasado <strong id="cardsCompletedCount">0</strong> tarjetas en esta sesión.</p>
+            
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{% url 'estudio:test_examen' %}" class="btn btn-success btn-tai btn-lg px-4">
+                    <i class="bi bi-file-earmark-check me-2"></i> Continuar al Simulacro Test INAP
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-tai btn-lg px-4">
+                    <i class="bi bi-house-door me-2"></i> Ir al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const tarjetasData = {{ tarjetas_json|safe }};
+    let currentIndex = 0;
+    let isFlipped = false;
+    let cardsCompleted = 0;
+    
+    // Temporizador de sesión (15 min por defecto)
+    let sessionSeconds = {{ sesion.duracion_minutos|default:15 }} * 60;
+    const timerElem = document.getElementById('timerDisplay');
+    
+    const timerInterval = setInterval(() => {
+        if (sessionSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerElem.innerText = "00:00";
+            return;
+        }
+        sessionSeconds--;
+        const mins = Math.floor(sessionSeconds / 60);
+        const secs = sessionSeconds % 60;
+        timerElem.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+
+    function renderCurrentCard() {
+        if (currentIndex >= tarjetasData.length) {
+            showFinishScreen();
+            return;
+        }
+
+        const card = tarjetasData[currentIndex];
+        isFlipped = false;
+        document.getElementById('activeCard').classList.remove('flipped');
+        document.getElementById('ratingControls').classList.add('d-none');
+        document.getElementById('flipPromptBtn').classList.remove('d-none');
+
+        document.getElementById('currentIdx').innerText = currentIndex + 1;
+        document.getElementById('totalCards').innerText = tarjetasData.length;
+        document.getElementById('cardBloque').innerText = card.bloque;
+        document.getElementById('cardTipo').innerText = card.tipo;
+        document.getElementById('cardTema').innerText = card.tema;
+        document.getElementById('cardPregunta').innerText = card.pregunta;
+        document.getElementById('cardRespuesta').innerText = card.respuesta;
+        document.getElementById('cardExplicacion').innerText = card.explicacion || 'Sin observaciones complementarias.';
+        document.getElementById('cardFuente').innerText = card.fuente;
+        document.getElementById('cardUrl').href = card.url_fuente || '#';
+        document.getElementById('cardDificultad').innerText = card.dificultad;
+
+        // Barra de progreso
+        const pct = ((currentIndex) / tarjetasData.length) * 100;
+        document.getElementById('sessionProgressBar').style.width = `${pct}%`;
+    }
+
+    function flipCard() {
+        if (isFlipped) return;
+        isFlipped = true;
+        document.getElementById('activeCard').classList.add('flipped');
+        document.getElementById('ratingControls').classList.remove('d-none');
+        document.getElementById('flipPromptBtn').classList.add('d-none');
+    }
+
+    async function rateCard(calificacion) {
+        const card = tarjetasData[currentIndex];
+        
+        try {
+            await fetch("{% url 'estudio:api_tarjeta_progreso' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    tarjeta_id: card.id,
+                    calificacion: calificacion
+                })
+            });
+        } catch (err) {
+            console.error('Error registrando SRS:', err);
+        }
+
+        cardsCompleted++;
+        
+        // Si falló ('repetir'), la volvemos a poner al final de la cola de hoy
+        if (calificacion === 'repetir') {
+            tarjetasData.push(card);
+        }
+
+        currentIndex++;
+        renderCurrentCard();
+    }
+
+    function showFinishScreen() {
+        document.getElementById('flashcardArea').classList.add('d-none');
+        document.getElementById('finishArea').classList.remove('d-none');
+        document.getElementById('cardsCompletedCount').innerText = cardsCompleted;
+        document.getElementById('sessionProgressBar').style.width = '100%';
+    }
+
+    // Atajos de Teclado
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+            e.preventDefault();
+            flipCard();
+        } else if (isFlipped) {
+            if (e.key === '1') rateCard('repetir');
+            else if (e.key === '2') rateCard('dificil');
+            else if (e.key === '3') rateCard('bien');
+            else if (e.key === '4') rateCard('facil');
+        }
+    });
+
+    // Iniciar con la primera tarjeta
+    if (tarjetasData.length > 0) {
+        renderCurrentCard();
+    } else {
+        showFinishScreen();
+    }
+</script>
+{% endblock %}
