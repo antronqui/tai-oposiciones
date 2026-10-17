@@ -131,8 +131,19 @@ SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 
 # Socialaccount Google Provider Configuration
-GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', os.getenv('SOCIAL_AUTH_GOOGLE_CLIENT_ID', '')).strip()
-GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', os.getenv('SOCIAL_AUTH_GOOGLE_SECRET', '')).strip()
+GOOGLE_CLIENT_ID = (
+    os.getenv('GOOGLE_CLIENT_ID')
+    or os.getenv('google_client_id')
+    or os.getenv('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
+    or ''
+).strip()
+
+GOOGLE_CLIENT_SECRET = (
+    os.getenv('GOOGLE_CLIENT_SECRET')
+    or os.getenv('google_client_secret')
+    or os.getenv('SOCIAL_AUTH_GOOGLE_SECRET')
+    or ''
+).strip()
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {

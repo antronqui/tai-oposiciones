@@ -31,6 +31,19 @@ class RestrictedSocialAccountAdapter(DefaultSocialAccountAdapter):
          y se le muestra una pantalla amigable indicando que su solicitud está en espera de aprobación
          por el administrador.
     """
+    def get_app(self, request, provider, client_id=None):
+        try:
+            return super().get_app(request, provider, client_id=client_id)
+        except Exception:
+            raise ImmediateHttpResponse(
+                render(request, 'accounts/solicitud_pendiente.html', {
+                    'error': (
+                        "Las credenciales de Google OAuth (GOOGLE_CLIENT_ID y GOOGLE_CLIENT_SECRET) "
+                        "no se han detectado en el servidor o aún se están aplicando en Render. "
+                        "Comprueba que ambas variables estén añadidas en Render > Environment Variables."
+                    )
+                })
+            )
     def pre_social_login(self, request, sociallogin):
         user = sociallogin.user
         email = None
