@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitud de Acceso - TAI 2027{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="card card-custom p-4 p-md-5 text-center bg-white shadow-sm border-warning border-opacity-50">
+            <div class="mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center bg-warning-subtle text-warning rounded-circle p-3 shadow-sm" style="width: 76px; height: 76px;">
+                    <i class="bi bi-clock-history fs-1"></i>
+                </span>
+            </div>
+
+            <h3 class="fw-bold text-dark mb-2">Solicitud de Acceso Registrada</h3>
+            
+            {% if error %}
+                <div class="alert alert-danger card-custom my-3 text-start small">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
+                </div>
+            {% else %}
+                <p class="text-muted mb-4">
+                    Hola <strong class="text-dark">{{ nombre|default:email }}</strong>, el acceso a la plataforma de preparación <strong class="text-primary">TAI 2027</strong> es restringido para opositores autorizados.
+                </p>
+
+                <div class="bg-light p-3 rounded-3 border mb-4 text-start">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted small">Cuenta de Google:</span>
+                        <span class="fw-bold text-dark small">{{ email }}</span>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted small">Estado de autorización:</span>
+                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">
+                            <i class="bi bi-hourglass-split me-1"></i> Pendiente de Aprobación
+                        </span>
+                    </div>
+                </div>
+
+                <div class="alert alert-info-subtle border border-info-subtle text-start small p-3 rounded-3 mb-4">
+                    <div class="d-flex gap-2">
+                        <i class="bi bi-info-circle-fill text-info fs-5 flex-shrink-0"></i>
+                        <div>
+                            Tu solicitud ha quedado guardada en el sistema. El administrador (<strong>{{ admin_email|default:"antronqui@gmail.com" }}</strong>) la revisará para concederte acceso. En cuanto seas aceptado/a, podrás entrar directamente con tu cuenta de Google pulsando el mismo botón de acceso.
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'landing' %}" class="btn btn-outline-secondary btn-tai py-2">
+                    <i class="bi bi-arrow-left me-2"></i> Volver a la página principal
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

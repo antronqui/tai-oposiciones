@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'accounts.context_processors.access_requests_processor',
             ],
         },
     },
@@ -113,6 +114,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Allauth & Invitations Configuration
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
+
 ACCOUNT_ADAPTER = 'accounts.adapter.RestrictedAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'accounts.adapter.RestrictedSocialAccountAdapter'
 LOGIN_REDIRECT_URL = '/dashboard/'
@@ -121,7 +124,16 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
+# Direct social login & auto-link
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
 # Socialaccount Google Provider Configuration
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', os.getenv('SOCIAL_AUTH_GOOGLE_CLIENT_ID', '')).strip()
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', os.getenv('SOCIAL_AUTH_GOOGLE_SECRET', '')).strip()
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
@@ -133,6 +145,13 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+if GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET:
+    SOCIALACCOUNT_PROVIDERS['google']['APP'] = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'secret': GOOGLE_CLIENT_SECRET,
+        'key': ''
+    }
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'

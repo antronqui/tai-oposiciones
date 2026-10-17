@@ -9,17 +9,19 @@ class Invitacion(models.Model):
     Tabla de control de acceso por lista blanca (Principio de acceso restringido)
     """
     email = models.EmailField(unique=True, help_text="Correo autorizado para iniciar sesión con Google")
-    activo = models.BooleanField(default=True)
+    nombre = models.CharField(max_length=150, blank=True, help_text="Nombre de la cuenta o nota")
+    activo = models.BooleanField(default=True, help_text="Si está activo, el usuario tiene permiso para entrar")
     fecha_alta = models.DateTimeField(auto_now_add=True)
-    comentario = models.CharField(max_length=200, blank=True, help_text="Nota interna del usuario invitado")
+    comentario = models.CharField(max_length=200, blank=True, help_text="Nota interna del usuario o motivo de solicitud")
 
     class Meta:
-        verbose_name = "Invitación"
-        verbose_name_plural = "Invitaciones"
+        verbose_name = "Invitación / Acceso"
+        verbose_name_plural = "Invitaciones y Accesos"
         ordering = ['-fecha_alta']
 
     def __str__(self):
-        return f"{self.email} ({'Activo' if self.activo else 'Inactivo'})"
+        estado = "Autorizado" if self.activo else "Pendiente"
+        return f"{self.email} ({estado})"
 
 
 class UserProfile(models.Model):

@@ -14,3 +14,9 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 2
+      - key: ADMIN_EMAIL
+        value: antronqui@gmail.com
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false

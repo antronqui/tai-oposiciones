@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Accesos - TAI 2027{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-3 border-bottom">
+            <div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Panel de Administración
+                </span>
+                <h2 class="fw-bold text-dark mt-2 mb-0">Control de Accesos e Invitaciones</h2>
+                <p class="text-muted small mb-0">
+                    Solo las cuentas autorizadas pueden iniciar sesión con Google. Superadministrador: <strong class="text-dark">{{ admin_email }}</strong>
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'admin:accounts_invitacion_changelist' %}" class="btn btn-outline-secondary btn-sm btn-tai">
+                    <i class="bi bi-database me-1"></i> Django Admin
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Solicitudes Pendientes -->
+    <div class="col-lg-7">
+        <div class="card card-custom p-4 bg-white shadow-sm mb-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="bg-warning text-dark p-2 rounded-3 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="bi bi-hourglass-split"></i>
+                    </span>
+                    <h5 class="fw-bold mb-0 text-dark">Solicitudes Pendientes</h5>
+                </div>
+                <span class="badge {% if pendientes %}bg-danger text-white{% else %}bg-secondary-subtle text-secondary{% endif %} rounded-pill px-3 py-2">
+                    {{ pendientes|length }} pendiente{% if pendientes|length != 1 %}s{% endif %}
+                </span>
+            </div>
+
+            {% if pendientes %}
+                <p class="text-muted small mb-3">
+                    Estas personas intentaron iniciar sesión con Google pero no estaban en la lista. Puedes autorizarlas con un clic:
+                </p>
+                <div class="d-flex flex-column gap-3">
+                    {% for p in pendientes %}
+                    <div class="p-3 border rounded-3 bg-light d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                        <div>
+                            <div class="fw-bold text-dark fs-6">{{ p.email }}</div>
+                            <div class="text-muted small">
+                                {% if p.nombre %}<span class="me-2"><i class="bi bi-person me-1"></i>{{ p.nombre }}</span>{% endif %}
+                                <span><i class="bi bi-calendar3 me-1"></i>{{ p.fecha_alta|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            {% if p.comentario %}
+                                <div class="text-secondary small fst-italic mt-1">{{ p.comentario }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <form method="post" action="{% url 'accounts:aprobar_acceso' p.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm btn-tai d-flex align-items-center gap-1 shadow-sm">
+                                    <i class="bi bi-check-circle-fill"></i> Aceptar
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'accounts:rechazar_acceso' p.pk %}" onsubmit="return confirm('¿Seguro que deseas rechazar y eliminar esta solicitud?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger btn-sm btn-tai">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-check-all fs-1 text-success d-block mb-2"></i>
+                    <p class="mb-0 fw-semibold">No hay solicitudes pendientes</p>
+                    <small>Cuando alguien nuevo intente iniciar sesión con Google, aparecerá aquí al instante.</small>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 2. Lista de Accesos Autorizados -->
+        <div class="card card-custom p-4 bg-white shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="bg-success text-white p-2 rounded-3 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="bi bi-person-check-fill"></i>
+                    </span>
+                    <h5 class="fw-bold mb-0 text-dark">Usuarios Autorizados</h5>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                    {{ autorizados|length }} activo{% if autorizados|length != 1 %}s{% endif %}
+                </span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 small">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Correo / Usuario</th>
+                            <th>Estado</th>
+                            <th>Alta</th>
+                            <th class="text-end">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in autorizados %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ a.email }}</div>
+                                {% if a.nombre %}<div class="text-muted small">{{ a.nombre }}</div>{% endif %}
+                            </td>
+                            <td>
+                                {% if a.email == admin_email %}
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Admin Principal</span>
+                                {% else %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle">Autorizado</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-muted">{{ a.fecha_alta|date:"d/m/Y" }}</td>
+                            <td class="text-end">
+                                {% if a.email != admin_email %}
+                                <form method="post" action="{% url 'accounts:desactivar_acceso' a.pk %}" class="d-inline" onsubmit="return confirm('¿Deseas suspender el acceso de {{ a.email }}?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-warning btn-sm py-1 px-2" title="Suspender acceso">
+                                        <i class="bi bi-pause-circle"></i> Revocar
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted small">Protegido</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-3">No hay usuarios registrados aún.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Formulario para Invitar por Anticipado -->
+    <div class="col-lg-5">
+        <div class="card card-custom p-4 bg-white shadow-sm sticky-top" style="top: 80px;">
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <span class="bg-primary text-white p-2 rounded-3 d-inline-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="bi bi-person-plus-fill"></i>
+                </span>
+                <h5 class="fw-bold mb-0 text-dark">Invitar por Anticipado</h5>
+            </div>
+            
+            <p class="text-muted small mb-3">
+                Añade el correo de Google de la persona antes de que entre. Al iniciar sesión con Google por primera vez, entrará directamente sin esperas.
+            </p>
+
+            <form method="post" action="{% url 'accounts:invitar_usuario' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-dark">Correo de Google *</label>
+                    <input type="email" name="email" class="form-control" placeholder="ejemplo@gmail.com" required>
+                    <div class="form-text small">La cuenta con la que esa persona iniciará sesión en Google.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-dark">Nombre o Apodo (Opcional)</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Ej: María Gómez">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-dark">Comentario / Nota interna</label>
+                    <input type="text" name="comentario" class="form-control" placeholder="Ej: Compañero de academia">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-tai w-100 py-2 shadow-sm">
+                    <i class="bi bi-send-check me-2"></i> Autorizar e Invitar
+                </button>
+            </form>
+
+            <div class="alert alert-light border mt-4 mb-0 small text-muted">
+                <i class="bi bi-info-circle text-primary me-1"></i>
+                Cualquier usuario añadido aquí podrá pulsar "Continuar con Google" y acceder directamente a todo el contenido y tests.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
