@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
+from allauth.account.forms import LoginForm
 from temario.models import Bloque, Tema
 from tarjetas.models import Tarjeta
 from estudio.models import ProgresoTarjeta, SesionEstudio, ProgresoPregunta
@@ -22,6 +23,8 @@ class LandingView(TemplateView):
         context['total_temas'] = Tema.objects.count()
         context['total_tarjetas'] = Tarjeta.objects.count()
         context['total_preguntas'] = PreguntaExamen.objects.count()
+        # La tarjeta de acceso del hero es la única superficie de login
+        context['login_form'] = LoginForm()
         return context
 
 

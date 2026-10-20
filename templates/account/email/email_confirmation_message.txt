@@ -1,0 +1,13 @@
+{% extends "account/email/base_message.txt" %}
+{% load account %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% user_display user as user_display %}{% blocktranslate %}Recibes este correo porque {{ user_display }} ha registrado esta dirección en la plataforma de preparación TAI 2027.{% endblocktranslate %}
+
+{% if code %}{% blocktranslate %}Tu código de verificación es:{% endblocktranslate %}
+
+{{ code }}{% else %}{% blocktranslate %}Para confirmar tu cuenta, abre este enlace:{% endblocktranslate %}
+
+{{ activate_url }}{% endif %}
+
+{% blocktranslate %}Si no has solicitado el acceso, puedes ignorar este mensaje: no se activará nada sin tu confirmación.{% endblocktranslate %}{% endautoescape %}{% endblock content %}

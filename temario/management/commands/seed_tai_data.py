@@ -1,10 +1,12 @@
+import datetime
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from accounts.models import Invitacion, UserProfile
 from temario.models import Bloque, Tema, Subtema, Concepto
 from tarjetas.models import Tarjeta
 from examenes.models import Examen, PreguntaExamen
-import datetime
 
 
 class Command(BaseCommand):
@@ -14,7 +16,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.NOTICE("Iniciando carga del temario oficial íntegro TAI (36 temas)..."))
 
         # 1. Usuarios e invitaciones
-        email_admin = "antronqui@gmail.com"
+        email_admin = getattr(settings, 'ADMIN_EMAIL', 'antronqui1@gmail.com')
         email_test = "opositor@tai.es"
 
         Invitacion.objects.get_or_create(email=email_admin, defaults={"activo": True, "comentario": "Administrador Principal"})

@@ -7,6 +7,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.urls import reverse_lazy
+from .adapter import admin_email_display, admin_emails, es_admin
 from .models import UserProfile, Invitacion
 from .forms import OnboardingForm
 
@@ -65,8 +66,7 @@ class GestionAccesosView(StaffRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
-        context['admin_email'] = admin_email
+        context['admin_email'] = admin_email_display()
         context['pendientes'] = Invitacion.objects.filter(activo=False).order_by('-fecha_alta')
         context['autorizados'] = Invitacion.objects.filter(activo=True).order_by('-fecha_alta')
         return context
@@ -84,7 +84,7 @@ class AprobarAccesoView(StaffRequiredMixin, View):
         # Si ya existe el usuario creado en auth_user, activarlo
         User.objects.filter(email__iexact=inv.email).update(is_active=True)
 
-        messages.success(request, f"¡Acceso aprobado para {inv.email}! Ya puede entrar con su cuenta de Google.")
+        messages.success(request, f"¡Acceso aprobado para {inv.email}! Ya puede entrar con su cuenta de Google o con su correo y contraseña.")
         return redirect('accounts:gestion_accesos')
 
 
@@ -94,8 +94,7 @@ class RechazarAccesoView(StaffRequiredMixin, View):
     """
     def post(self, request, pk):
         inv = get_object_or_404(Invitacion, pk=pk)
-        admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
-        if inv.email.lower() == admin_email:
+        if es_admin(inv.email):
             messages.error(request, "No puedes eliminar la cuenta del administrador principal.")
             return redirect('accounts:gestion_accesos')
 
@@ -111,8 +110,7 @@ class DesactivarAccesoView(StaffRequiredMixin, View):
     """
     def post(self, request, pk):
         inv = get_object_or_404(Invitacion, pk=pk)
-        admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
-        if inv.email.lower() == admin_email:
+        if es_admin(inv.email):
             messages.error(request, "No se puede revocar el acceso a la cuenta del administrador.")
             return redirect('accounts:gestion_accesos')
 
@@ -148,7 +146,7 @@ class InvitarUsuarioView(StaffRequiredMixin, View):
         User.objects.filter(email__iexact=email).update(is_active=True)
 
         if created:
-            messages.success(request, f"¡Invitación autorizada para {email}! Ya puede iniciar sesión con Google.")
+            messages.success(request, f"¡Invitación autorizada para {email}! Ya puede entrar con Google o registrarse con ese correo.")
         else:
             messages.success(request, f"El usuario {email} ha sido reactivado / autorizado correctamente.")
 
@@ -179,8 +177,7 @@ class LocalDevLoginView(TemplateView):
             messages.error(request, "Introduce una dirección de correo válida.")
             return self.get(request, *args, **kwargs)
 
-        admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
-        is_admin = (email == admin_email or email == "admin@tai.es")
+        is_admin = (es_admin(email) or email == "admin@tai.es")
 
         # Comprobar invitación o crear si es admin
         es_invitado = Invitacion.objects.filter(email__iexact=email, activo=True).exists()

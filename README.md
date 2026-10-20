@@ -21,11 +21,27 @@ Plataforma web basada en **Django** y **Bootstrap 5** para la preparación integ
    - Fórmula oficial de corrección AGE: `Puntuación = Aciertos - (Errores / 3)`.
 4. **Sesiones Adaptativas de Estudio**:
    - Modalidades configurables de 15, 30, 45 y 60 minutos con balance de estudio y test.
-5. **Autenticación con Google y Control por Invitación**:
+5. **Acceso con Google o con email + contraseña**:
    - Integración con `django-allauth`.
-   - Control de acceso por lista blanca en base de datos.
-6. **Despliegue Listo en PythonAnywhere**:
-   - Arquitectura preparada para SQLite / MySQL y WhiteNoise para archivos estáticos.
+   - Registro abierto con **verificación de correo obligatoria**.
+   - Control de acceso por lista blanca (`Invitacion`) y aprobación del administrador.
+6. **Despliegue Listo en Render / PythonAnywhere**:
+   - WhiteNoise para estáticos y Postgres vía `DATABASE_URL`.
+
+---
+
+## 🔐 Flujo de acceso
+
+Hay dos formas de entrar y ambas pasan por la lista blanca:
+
+| Vía | Qué ocurre |
+|---|---|
+| **Google** | Si el correo está autorizado entra directamente; si no, se registra la solicitud y se muestra la pantalla de espera. |
+| **Email + contraseña** | Se registra en `/accounts/signup/`, recibe un correo de verificación y, una vez verificado, entra si el administrador aprobó su solicitud. |
+
+- Si el administrador **invita antes** el correo (`/perfil/gestion-accesos/`), el usuario entra en cuanto confirma su correo, sin esperar aprobación.
+- Los usuarios de Google no necesitan verificar el correo: lo garantiza el proveedor.
+- Un usuario desactivado desde el panel ve una pantalla de "Acceso suspendido".
 
 ---
 
@@ -77,3 +93,66 @@ Abre [http://127.0.0.1:8000](http://127.0.0.1:8000) en tu navegador.
    - Configura el archivo **WSGI** copiando el contenido de [wsgi_pythonanywhere.py](file:///C:/Users/antro/antigravity/wsgi_pythonanywhere.py).
    - Define el Virtualenv: `/home/<tu_usuario>/.virtualenvs/tai-env`.
 4. Recarga la aplicación web.
+
+---
+
+## ☁️ Despliegue en Render (producción)
+
+### Variables de entorno
+
+| Variable | Obligatoria | Para qué |
+|---|---|---|
+| `SECRET_KEY` | sí | Django |
+| `DEBUG` | sí (`False`) | Producción |
+| `ADMIN_EMAILS` | sí | Cuentas que se crean como superusuario, separadas por comas |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | sí (Google) | OAuth de Google |
+| `DATABASE_URL` | muy recomendada | Postgres; sin ella se usa SQLite efímero |
+| `EMAIL_HOST` | sí (correo) | `smtp-relay.brevo.com` |
+| `EMAIL_PORT` | sí | `2525` |
+| `EMAIL_USE_TLS` | sí | `True` |
+| `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | sí | Credenciales SMTP de Brevo |
+| `DEFAULT_FROM_EMAIL` | sí | Remitente verificado en Brevo |
+| `SITE_NAME` / `SITE_DOMAIN` | opcional | Nombre y dominio que salen en los correos |
+
+### Correo con Brevo (gratis, 300/día)
+
+Render bloquea los puertos SMTP **25, 465 y 587** en el plan free, por eso se
+usa el **2525** de Brevo.
+
+1. Crear cuenta en [brevo.com](https://www.brevo.com).
+2. **Senders & IP** → añadir `antronqui1@gmail.com` y confirmar el código de validación.
+3. **SMTP & API → SMTP**: copiar el *login* (`xxxx@smtp-brevo.com`) y la *clave SMTP*.
+4. En Render, definir `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` y
+   `DEFAULT_FROM_EMAIL=TAI 2027 <antronqui1@gmail.com>`. El remitente debe ser
+   exactamente el correo verificado en Brevo.
+
+Para comprobar que el SMTP funciona (en local o desde la Shell de Render):
+
+```bash
+python manage.py test_email tu@correo.com
+```
+
+> En local, sin credenciales y con `DEBUG=True`, los correos se imprimen en la
+> consola de `runserver` (backend `console`), así que el enlace de verificación
+> se puede copiar sin configurar nada.
+
+### Base de datos Postgres (Neon, gratis)
+
+1. Crear un proyecto en [neon.tech](https://neon.tech) y copiar la cadena de
+   conexión (`postgresql://...?sslmode=require`).
+2. En Render, definir `DATABASE_URL` con esa cadena.
+
+`build.sh` ejecuta `migrate` y `ensure_site` en cada despliegue.
+
+> **Importante:** sin `DATABASE_URL` la app usa `db.sqlite3`, que está
+> commiteado. El disco de Render free es efímero: cada despliegue o reinicio
+> restaura el fichero del repositorio y se pierden usuarios, invitaciones y
+> progreso creados en producción.
+
+### Comprobación antes de subir
+
+```bash
+python manage.py check
+python manage.py test
+```
+

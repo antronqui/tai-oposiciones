@@ -1,0 +1,1 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate %}Confirma tu correo en TAI 2027{% endblocktranslate %}{% endautoescape %}

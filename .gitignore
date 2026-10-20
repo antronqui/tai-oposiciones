@@ -10,8 +10,11 @@ venv/
 ENV/
 env/
 
-# Environment variables
+# Environment variables (nunca subir credenciales)
 .env
+.env.*
+.env.bak
+!.env.example
 
 # Static collected files (generated on server via collectstatic)
 staticfiles/

@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}{% blocktranslate with site_name=current_site.name %}Hola desde {{ site_name }}:{% endblocktranslate %}
+
+{% block content %}{% endblock content %}
+
+{% blocktranslate with site_name=current_site.name site_domain=current_site.domain %}Gracias por usar {{ site_name }}.
+{{ site_domain }}{% endblocktranslate %}
+{% endautoescape %}

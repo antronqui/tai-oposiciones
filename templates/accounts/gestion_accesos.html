@@ -12,7 +12,7 @@
                 </span>
                 <h2 class="fw-bold text-dark mt-2 mb-0">Control de Accesos e Invitaciones</h2>
                 <p class="text-muted small mb-0">
-                    Solo las cuentas autorizadas pueden iniciar sesión con Google. Superadministrador: <strong class="text-dark">{{ admin_email }}</strong>
+                    Solo las cuentas autorizadas pueden entrar, con Google o con correo y contraseña. Superadministrador: <strong class="text-dark">{{ admin_email }}</strong>
                 </p>
             </div>
             <div>
@@ -40,7 +40,7 @@
 
             {% if pendientes %}
                 <p class="text-muted small mb-3">
-                    Estas personas intentaron iniciar sesión con Google pero no estaban en la lista. Puedes autorizarlas con un clic:
+                    Estas personas han pedido acceso (con Google o registrándose con su correo) pero no estaban en la lista. Puedes autorizarlas con un clic:
                 </p>
                 <div class="d-flex flex-column gap-3">
                     {% for p in pendientes %}
@@ -76,7 +76,7 @@
                 <div class="text-center py-4 text-muted">
                     <i class="bi bi-check-all fs-1 text-success d-block mb-2"></i>
                     <p class="mb-0 fw-semibold">No hay solicitudes pendientes</p>
-                    <small>Cuando alguien nuevo intente iniciar sesión con Google, aparecerá aquí al instante.</small>
+                    <small>Cuando alguien nuevo pida acceso (con Google o registrándose con su correo), aparecerá aquí al instante.</small>
                 </div>
             {% endif %}
         </div>
@@ -155,15 +155,15 @@
             </div>
             
             <p class="text-muted small mb-3">
-                Añade el correo de Google de la persona antes de que entre. Al iniciar sesión con Google por primera vez, entrará directamente sin esperas.
+                Añade el correo de la persona antes de que entre. Da igual si luego usa Google o correo y contraseña: si el correo coincide, entrará directamente sin esperas.
             </p>
 
             <form method="post" action="{% url 'accounts:invitar_usuario' %}">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label class="form-label small fw-bold text-dark">Correo de Google *</label>
+                    <label class="form-label small fw-bold text-dark">Correo de la persona *</label>
                     <input type="email" name="email" class="form-control" placeholder="ejemplo@gmail.com" required>
-                    <div class="form-text small">La cuenta con la que esa persona iniciará sesión en Google.</div>
+                    <div class="form-text small">El correo con el que iniciará sesión, ya sea con Google o registrándose.</div>
                 </div>
 
                 <div class="mb-3">
@@ -183,7 +183,7 @@
 
             <div class="alert alert-light border mt-4 mb-0 small text-muted">
                 <i class="bi bi-info-circle text-primary me-1"></i>
-                Cualquier usuario añadido aquí podrá pulsar "Continuar con Google" y acceder directamente a todo el contenido y tests.
+                Cualquier usuario añadido aquí podrá entrar con Google o con su correo y contraseña directamente a todo el contenido y tests.
             </div>
         </div>
     </div>

@@ -8,16 +8,24 @@
         <div class="card card-custom p-4 p-md-5 text-center bg-white shadow-sm border-warning border-opacity-50">
             <div class="mb-4">
                 <span class="d-inline-flex align-items-center justify-content-center bg-warning-subtle text-warning rounded-circle p-3 shadow-sm" style="width: 76px; height: 76px;">
-                    <i class="bi bi-clock-history fs-1"></i>
+                    <i class="bi {{ icono|default:'bi-clock-history' }} fs-1"></i>
                 </span>
             </div>
 
-            <h3 class="fw-bold text-dark mb-2">Solicitud de Acceso Registrada</h3>
-            
+            <h3 class="fw-bold text-dark mb-2">
+                {% if motivo == 'revocado' %}Acceso suspendido{% else %}Solicitud de Acceso Registrada{% endif %}
+            </h3>
+
             {% if error %}
                 <div class="alert alert-danger card-custom my-3 text-start small">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ error }}
                 </div>
+            {% elif motivo == 'revocado' %}
+                <p class="text-muted mb-4">
+                    El acceso de <strong class="text-dark">{{ email }}</strong> está desactivado.
+                    Si crees que es un error, ponte en contacto con el administrador
+                    (<strong>{{ admin_email|default:"antronqui1@gmail.com" }}</strong>).
+                </p>
             {% else %}
                 <p class="text-muted mb-4">
                     Hola <strong class="text-dark">{{ nombre|default:email }}</strong>, el acceso a la plataforma de preparación <strong class="text-primary">TAI 2027</strong> es restringido para opositores autorizados.
@@ -25,7 +33,7 @@
 
                 <div class="bg-light p-3 rounded-3 border mb-4 text-start">
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="text-muted small">Cuenta de Google:</span>
+                        <span class="text-muted small">Cuenta:</span>
                         <span class="fw-bold text-dark small">{{ email }}</span>
                     </div>
                     <div class="d-flex align-items-center justify-content-between">
@@ -40,15 +48,18 @@
                     <div class="d-flex gap-2">
                         <i class="bi bi-info-circle-fill text-info fs-5 flex-shrink-0"></i>
                         <div>
-                            Tu solicitud ha quedado guardada en el sistema. El administrador (<strong>{{ admin_email|default:"antronqui@gmail.com" }}</strong>) la revisará para concederte acceso. En cuanto seas aceptado/a, podrás entrar directamente con tu cuenta de Google pulsando el mismo botón de acceso.
+                            Tu solicitud ha quedado guardada en el sistema. El administrador (<strong>{{ admin_email|default:"antronqui1@gmail.com" }}</strong>) la revisará para concederte acceso. En cuanto seas aceptado/a, podrás entrar directamente con tu cuenta de Google o con tu correo y contraseña.
                         </div>
                     </div>
                 </div>
             {% endif %}
 
             <div class="d-grid gap-2">
+                <a href="{% url 'account_login' %}" class="btn btn-primary btn-tai py-2">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Volver al acceso
+                </a>
                 <a href="{% url 'landing' %}" class="btn btn-outline-secondary btn-tai py-2">
-                    <i class="bi bi-arrow-left me-2"></i> Volver a la página principal
+                    <i class="bi bi-arrow-left me-2"></i> Página principal
                 </a>
             </div>
         </div>

@@ -23,6 +23,13 @@
             --tai-bg: #f8fafc;
             --tai-card-bg: #ffffff;
         }
+        html {
+            scroll-behavior: smooth;
+        }
+        /* La navbar es sticky: deja aire al saltar al bloque de acceso */
+        #acceso {
+            scroll-margin-top: 84px;
+        }
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--tai-bg);
@@ -146,16 +153,20 @@
                     <a href="{% url 'accounts:perfil' %}" class="btn btn-outline-light btn-sm rounded-pill" title="Configurar Plan">
                         <i class="bi bi-gear"></i>
                     </a>
-                    <a href="{% url 'account_logout' %}" class="btn btn-danger btn-sm rounded-pill" title="Cerrar sesión">
-                        <i class="bi bi-box-arrow-right"></i>
-                    </a>
+                    <form method="post" action="{% url 'account_logout' %}" class="d-inline-flex">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm rounded-pill" title="Cerrar sesión">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </form>
                 </div>
                 {% else %}
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center gap-2">
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-sm px-3 rounded-pill d-flex align-items-center gap-2" href="{% url 'google_login' %}">
-                            <i class="bi bi-google"></i>
-                            <span>Entrar con Google</span>
+                        <a class="btn btn-primary btn-sm px-3 rounded-pill d-flex align-items-center gap-2"
+                           href="{% if request.resolver_match.url_name == 'landing' %}#acceso{% else %}{% url 'account_login' %}{% endif %}">
+                            <i class="bi bi-box-arrow-in-right"></i>
+                            <span>Acceder</span>
                         </a>
                     </li>
                     {% if debug %}

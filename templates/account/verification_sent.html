@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Confirma tu correo - TAI 2027{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-4">
+    <div class="col-md-9 col-lg-6">
+        <div class="card card-custom p-4 p-md-5 bg-white shadow-sm text-center">
+            <div class="mb-3">
+                <span class="d-inline-flex align-items-center justify-content-center bg-primary-subtle text-primary rounded-circle p-3" style="width: 76px; height: 76px;">
+                    <i class="bi bi-envelope-paper-fill fs-1"></i>
+                </span>
+            </div>
+            <h3 class="fw-bold mb-2">Revisa tu correo</h3>
+            <p class="text-muted mb-4">
+                Te hemos enviado un mensaje con un enlace para confirmar tu dirección de correo.
+                Pulsa ese enlace y, en cuanto el administrador apruebe tu acceso, podrás entrar con
+                tu correo y contraseña.
+            </p>
+
+            <div class="alert alert-warning-subtle border border-warning-subtle text-start small p-3 rounded-3 mb-4">
+                <div class="d-flex gap-2">
+                    <i class="bi bi-exclamation-triangle-fill text-warning fs-5 flex-shrink-0"></i>
+                    <div>
+                        Si no lo ves en unos minutos, mira en la carpeta de <strong>spam</strong> o
+                        correo no deseado. El enlace caduca a los 3 días.
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{% url 'landing' %}" class="btn btn-outline-secondary btn-tai py-2">
+                    <i class="bi bi-arrow-left me-2"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
