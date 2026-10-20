@@ -23,7 +23,13 @@ class Command(BaseCommand):
         Invitacion.objects.get_or_create(email=email_test, defaults={"activo": True, "comentario": "Usuario de pruebas"})
 
         if not User.objects.filter(username="admin").exists():
-            admin_user = User.objects.create_superuser("admin", email_admin, "admin1234")
+            admin_user = User.objects.create_superuser("admin", email_admin, None)
+            if settings.DEBUG:
+                # Solo en local: permite entrar por /admin/ con admin/admin1234
+                admin_user.set_password("admin1234")
+            else:
+                # En producción la cuenta no tiene contraseña: se entra con Google
+                admin_user.set_unusable_password()
             admin_user.first_name = "Juan Antonio"
             admin_user.last_name = "Montes"
             admin_user.save()

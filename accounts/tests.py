@@ -305,3 +305,14 @@ class LandingYTemasTests(TestCase):
         self.assertEqual(site.name, "TAI 2027")
         self.assertEqual(site.domain, "tai.example.com")
 
+    def test_seed_if_empty_respeta_una_base_ya_sembrada(self):
+        from django.core.management import call_command
+
+        from temario.models import Bloque
+
+        Bloque.objects.create(numero=1, nombre="Bloque de prueba", descripcion="x")
+
+        call_command("seed_if_empty", verbosity=0)
+
+        self.assertEqual(Bloque.objects.count(), 1)
+

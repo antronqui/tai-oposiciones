@@ -13,7 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-*)i)94(g#*ak&b6%-324zhf62f@*vv*(4t&6fib@6((93ca-8f')
 
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
+# Por defecto False: una variable DEBUG ausente en producción NO debe dejar el
+# modo depuración activo (expone rutas, settings y variables de entorno).
+# En local se activa con DEBUG=True en .env.
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 

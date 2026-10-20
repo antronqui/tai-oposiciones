@@ -142,7 +142,12 @@ python manage.py test_email tu@correo.com
    conexión (`postgresql://...?sslmode=require`).
 2. En Render, definir `DATABASE_URL` con esa cadena.
 
-`build.sh` ejecuta `migrate` y `ensure_site` en cada despliegue.
+`build.sh` ejecuta `migrate`, `ensure_site` y `seed_if_empty` en cada despliegue.
+
+**Contenido inicial:** `seed_if_empty` carga `temario/fixtures/contenido_inicial.json`
+(4 bloques, 36 temas, 522 tarjetas, 10 exámenes y 1.100 preguntas) cuando la base
+está vacía, y no hace nada si ya hay contenido. Así un Postgres recién creado
+queda listo en el propio despliegue.
 
 > **Importante:** sin `DATABASE_URL` la app usa `db.sqlite3`, que está
 > commiteado. El disco de Render free es efímero: cada despliegue o reinicio
