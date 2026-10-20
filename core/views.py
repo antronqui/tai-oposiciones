@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +8,16 @@ from temario.models import Bloque, Tema
 from tarjetas.models import Tarjeta
 from estudio.models import ProgresoTarjeta, SesionEstudio, ProgresoPregunta
 from examenes.models import Examen, PreguntaExamen
+
+
+def healthz(request):
+    """Latido para UptimeRobot / Render.
+
+    No toca la base de datos a propósito: mantiene el servicio web despierto sin
+    despertar el Postgres de Neon (que tiene horas de cómputo limitadas en el
+    plan gratuito).
+    """
+    return HttpResponse('ok', content_type='text/plain; charset=utf-8')
 
 
 class LandingView(TemplateView):

@@ -154,6 +154,22 @@ queda listo en el propio despliegue.
 > restaura el fichero del repositorio y se pierden usuarios, invitaciones y
 > progreso creados en producción.
 
+### Mantener el servicio despierto (UptimeRobot)
+
+Render free duerme el servicio a los 15 minutos sin tráfico. Un monitor de
+UptimeRobot **cada 10 minutos** lo mantiene despierto (750 h/mes de plan free,
+24/7 son ~730 h).
+
+Pero conviene apuntarlo a **`/healthz/`**, no a `/`:
+
+- `/healthz/` responde `ok` sin consultar la base de datos.
+- `/` sí consulta Postgres, y Neon free tiene ~190 h de cómputo al mes. Como
+  Neon suspende 5 minutos después de la última consulta, un ping cada 10 minutos
+  deja la base encendida la mitad del mes (~365 h) y agota la cuota.
+
+Con el monitor en `/healthz/` el primer acceso real del día tarda ~1 segundo más
+mientras Neon despierta, y el resto va normal.
+
 ### Comprobación antes de subir
 
 ```bash
