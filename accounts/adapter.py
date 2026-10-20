@@ -32,9 +32,13 @@ class RestrictedSocialAccountAdapter(DefaultSocialAccountAdapter):
          por el administrador.
     """
     def get_app(self, request, provider, client_id=None):
+        from allauth.socialaccount.models import SocialApp
+
         try:
             return super().get_app(request, provider, client_id=client_id)
-        except Exception:
+        except (SocialApp.DoesNotExist, SocialApp.MultipleObjectsReturned):
+            # Solo se capturan los fallos de configuracion de la app OAuth, no
+            # cualquier error, para no ocultar problemas reales del login.
             raise ImmediateHttpResponse(
                 render(request, 'accounts/solicitud_pendiente.html', {
                     'error': (
@@ -44,13 +48,40 @@ class RestrictedSocialAccountAdapter(DefaultSocialAccountAdapter):
                     )
                 })
             )
+
+    @staticmethod
+    def _email_from_sociallogin(sociallogin):
+        """Devuelve el email normalizado que Google ha devuelto en este login."""
+        user = getattr(sociallogin, 'user', None)
+        email = ''
+        if user is not None and getattr(user, 'email', ''):
+            email = user.email
+        elif sociallogin.account and sociallogin.account.extra_data:
+            email = sociallogin.account.extra_data.get('email', '')
+        return (email or '').lower().strip()
+
+    def is_open_for_signup(self, request, sociallogin):
+        """
+        El registro tradicional (email + contrasena) esta cerrado a proposito en
+        RestrictedAccountAdapter. Pero DefaultSocialAccountAdapter delega aqui, y
+        allauth aborta el alta social con SignupClosedException ("Registro
+        cerrado") cuando devuelve False.
+
+        Como consecuencia, un opositor recien aprobado (que todavia no tiene
+        fila en auth_user) nunca podia entrar con Google. Aqui permitimos el alta
+        social SOLO si el correo esta en la lista blanca y activo; el resto de
+        controles se siguen aplicando en pre_social_login.
+        """
+        email = self._email_from_sociallogin(sociallogin)
+        if not email:
+            return False
+        admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
+        if email == admin_email:
+            return True
+        return Invitacion.objects.filter(email__iexact=email, activo=True).exists()
+
     def pre_social_login(self, request, sociallogin):
-        user = sociallogin.user
-        email = None
-        if user and user.email:
-            email = user.email.lower().strip()
-        elif sociallogin.account.extra_data:
-            email = sociallogin.account.extra_data.get('email', '').lower().strip()
+        email = self._email_from_sociallogin(sociallogin)
 
         admin_email = getattr(settings, 'ADMIN_EMAIL', 'antronqui@gmail.com').lower().strip()
 
@@ -67,16 +98,22 @@ class RestrictedSocialAccountAdapter(DefaultSocialAccountAdapter):
 
         is_admin = (email == admin_email)
 
-        # Conectar con usuario existente si ya existe por email
+        # Conectar con usuario existente si ya existe por email.
+        # OJO: el email NO es unico en auth_user, por lo que get() puede lanzar
+        # MultipleObjectsReturned (error 500). Usamos filter().first() y damos
+        # prioridad al superusuario mas antiguo.
         if not sociallogin.is_existing:
-            try:
-                existing_user = User.objects.get(email__iexact=email)
+            existing_user = (
+                User.objects
+                .filter(email__iexact=email)
+                .order_by('-is_superuser', 'id')
+                .first()
+            )
+            if existing_user is not None:
                 try:
                     sociallogin.connect(request, existing_user)
                 except Exception:
                     sociallogin.user = existing_user
-            except User.DoesNotExist:
-                pass
 
         if is_admin:
             # Asegurar registro de invitación y permisos de superusuario
